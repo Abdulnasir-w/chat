@@ -1,3 +1,4 @@
+import 'package:chat/Widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,13 +13,15 @@ class HomeScreen extends StatelessWidget {
           "Chat",
           style: TextStyle(
             color: Colors.white,
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(color: Colors.white),
+        // automaticallyImplyLeading: false,
       ),
+      drawer: const CustomNavigationDrawer(),
       body: Column(
         children: [],
       ),
