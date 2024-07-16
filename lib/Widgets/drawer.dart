@@ -50,12 +50,12 @@ class CustomNavigationDrawer extends StatelessWidget {
               ),
               iconColor: Colors.white,
               horizontalTitleGap: 50,
-              contentPadding: EdgeInsets.symmetric(horizontal: 40),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const PrivacyPolicyScreen())),
-            )
+            ),
           ],
         ));
   }

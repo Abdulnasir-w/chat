@@ -1,3 +1,4 @@
+import 'package:chat/Widgets/custom_button.dart';
 import 'package:chat/Widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
@@ -18,12 +19,21 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         // automaticallyImplyLeading: false,
       ),
       drawer: const CustomNavigationDrawer(),
       body: Column(
-        children: [],
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: CustomButton(
+              title: 'Profile',
+              onPressed: () {},
+            ),
+          ),
+        ],
       ),
     );
   }
