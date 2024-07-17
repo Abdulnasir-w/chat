@@ -1,3 +1,4 @@
+import 'package:chat/Utils/whatsapp.dart';
 import 'package:chat/Widgets/custom_button.dart';
 import 'package:chat/Widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,10 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomButton(
-                  title: 'Profile',
-                  onPressed: () {},
+                  title: 'Whatsapp',
+                  onPressed: () {
+                    launchWhatsapp(phone: "923439030787");
+                  },
                   asset: 'assets/whatsapp.svg',
                 ),
                 CustomButton(
