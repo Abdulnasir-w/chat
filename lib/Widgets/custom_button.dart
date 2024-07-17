@@ -3,12 +3,14 @@ import 'package:flutter_svg/svg.dart';
 
 class CustomButton extends StatelessWidget {
   final String title;
+  final String asset;
   final VoidCallback onPressed;
 
   const CustomButton({
     super.key,
     required this.title,
     required this.onPressed,
+    required this.asset,
   });
 
   @override
@@ -16,13 +18,22 @@ class CustomButton extends StatelessWidget {
     return Column(
       children: [
         IconButton(
-            onPressed: onPressed,
-            icon: SvgPicture.asset(
-              "assets/whatsapp.svg",
-              width: 40,
-              height: 40,
-            )),
-        Text(title),
+          onPressed: onPressed,
+          icon: SvgPicture.asset(
+            asset,
+            width: 40,
+            height: 40,
+          ),
+        ),
+        Center(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontFamily: "Roboto",
+              fontSize: 14,
+            ),
+          ),
+        ),
       ],
     );
   }

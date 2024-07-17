@@ -19,21 +19,39 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+
         iconTheme: const IconThemeData(color: Colors.white),
         // automaticallyImplyLeading: false,
       ),
       drawer: const CustomNavigationDrawer(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: CustomButton(
-              title: 'Profile',
-              onPressed: () {},
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomButton(
+                  title: 'Profile',
+                  onPressed: () {},
+                  asset: 'assets/whatsapp.svg',
+                ),
+                CustomButton(
+                  title: 'Profile',
+                  onPressed: () {},
+                  asset: 'assets/messenger.svg',
+                ),
+                CustomButton(
+                  title: 'Profile',
+                  onPressed: () {},
+                  asset: 'assets/link.svg',
+                ),
+              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -8,55 +8,56 @@ class CustomNavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        backgroundColor: Colors.lightBlueAccent,
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: UserAccountsDrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.lightBlueAccent.shade400,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                accountName: const Text("Nasir"),
-                accountEmail: const Text("abdulNasir@gmail.con"),
+      backgroundColor: Colors.lightBlueAccent,
+      child: ListView(
+        children: [
+          DrawerHeader(
+            child: UserAccountsDrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.lightBlueAccent.shade400,
+                borderRadius: BorderRadius.circular(13),
               ),
+              accountName: const Text("Nasir"),
+              accountEmail: const Text("abdulNasir@gmail.con"),
             ),
-            const SizedBox(
-              height: 40,
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          ListTile(
+            leading: const Icon(Icons.home_filled),
+            title: const Text(
+              "Home",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400),
             ),
-            ListTile(
-              leading: const Icon(Icons.home_filled),
-              title: const Text(
-                "Home",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400),
-              ),
-              iconColor: Colors.white,
-              horizontalTitleGap: 50,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen())),
+            iconColor: Colors.white,
+            horizontalTitleGap: 50,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 40),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const HomeScreen())),
+          ),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text(
+              "Privacy Policy",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400),
             ),
-            ListTile(
-              leading: const Icon(Icons.privacy_tip_outlined),
-              title: const Text(
-                "Privacy Policy",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400),
-              ),
-              iconColor: Colors.white,
-              horizontalTitleGap: 50,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PrivacyPolicyScreen())),
-            ),
-          ],
-        ));
+            iconColor: Colors.white,
+            horizontalTitleGap: 50,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 40),
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const PrivacyPolicyScreen())),
+          ),
+        ],
+      ),
+    );
   }
 }
