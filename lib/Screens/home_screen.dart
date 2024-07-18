@@ -1,8 +1,10 @@
 import 'package:chat/Utils/messenger.dart';
+import 'package:chat/Utils/web_view.dart';
 import 'package:chat/Utils/whatsapp.dart';
 import 'package:chat/Widgets/custom_button.dart';
 import 'package:chat/Widgets/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,9 +23,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-
         iconTheme: const IconThemeData(color: Colors.white),
-        // automaticallyImplyLeading: false,
       ),
       drawer: const CustomNavigationDrawer(),
       body: Padding(
@@ -53,12 +53,40 @@ class HomeScreen extends StatelessWidget {
                 ),
                 CustomButton(
                   title: 'Profile',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MyWebView(
+                          url: 'https://flutter.dev',
+                        ),
+                      ),
+                    );
+                  },
                   asset: 'assets/link.svg',
                 ),
               ],
             ),
           ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      floatingActionButton: SizedBox(
+        width: 70,
+        height: 70,
+        child: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: Colors.transparent,
+          elevation: 0, // Remove shadow
+          highlightElevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+          child: SvgPicture.asset(
+            "assets/chat.svg",
+            width: 70,
+            height: 70,
+          ),
         ),
       ),
     );
