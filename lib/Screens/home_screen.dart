@@ -1,3 +1,4 @@
+import 'package:chat/Screens/chat_screen.dart';
 import 'package:chat/Utils/messenger.dart';
 import 'package:chat/Utils/web_view.dart';
 import 'package:chat/Utils/whatsapp.dart';
@@ -76,7 +77,12 @@ class HomeScreen extends StatelessWidget {
         width: 70,
         height: 70,
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ChatScreen(),
+            ),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 0, // Remove shadow
           highlightElevation: 0,
