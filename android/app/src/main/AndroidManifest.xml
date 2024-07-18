@@ -1,4 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package="com.example.webview_flutter_example"
+>
 <uses-permission android:name="android.permission.INTERNET"/>
 <!-- Provide required visibility configuration for API level 30 and above -->
 <queries>
@@ -20,6 +22,7 @@
 
     <application
         android:label="chat"
+        android:usesCleartextTraffic="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,3 +1,4 @@
+import 'package:chat/Utils/messenger.dart';
 import 'package:chat/Utils/whatsapp.dart';
 import 'package:chat/Widgets/custom_button.dart';
 import 'package:chat/Widgets/drawer.dart';
@@ -42,8 +43,12 @@ class HomeScreen extends StatelessWidget {
                   asset: 'assets/whatsapp.svg',
                 ),
                 CustomButton(
-                  title: 'Profile',
-                  onPressed: () {},
+                  title: 'Messenger',
+                  onPressed: () {
+                    launchMessenger(
+                        messengerUrl:
+                            "https://www.messenger.com/t/104562529074116");
+                  },
                   asset: 'assets/messenger.svg',
                 ),
                 CustomButton(
