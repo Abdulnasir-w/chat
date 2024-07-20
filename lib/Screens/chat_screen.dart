@@ -19,7 +19,7 @@ class ChatScreen extends StatelessWidget {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Column(),
+      body: const Center(child: Text("Chat Screen")),
     );
   }
 }

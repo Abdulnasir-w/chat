@@ -29,46 +29,196 @@ class HomeScreen extends StatelessWidget {
       drawer: const CustomNavigationDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomButton(
-                  title: 'Whatsapp',
-                  onPressed: () {
-                    launchWhatsapp(phone: "923439030787");
-                  },
-                  asset: 'assets/whatsapp.svg',
-                ),
-                CustomButton(
-                  title: 'Messenger',
-                  onPressed: () {
-                    launchMessenger(
-                        messengerUrl:
-                            "https://www.messenger.com/t/104562529074116");
-                  },
-                  asset: 'assets/messenger.svg',
-                ),
-                CustomButton(
-                  title: 'Profile',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MyWebView(
-                          url: 'https://flutter.dev',
+        child: SizedBox(
+          width: 400,
+          height: 280,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              /// 1st Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomButton(
+                    title: 'Whatsapp',
+                    onPressed: () {
+                      launchWhatsapp(phone: "923439030787");
+                    },
+                    asset: 'assets/whatsapp.svg',
+                  ),
+                  CustomButton(
+                    title: 'Messenger',
+                    onPressed: () {
+                      launchMessenger(
+                          messengerUrl:
+                              "https://www.messenger.com/t/104562529074116");
+                    },
+                    asset: 'assets/messenger.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://flutter.dev',
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  asset: 'assets/link.svg',
-                ),
-              ],
-            ),
-          ],
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://youtube.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+
+              /// 2nd Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://google.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://youtube.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://tiktok.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://youtube.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://youtube.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://youtube.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://youtube.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                  CustomButton(
+                    title: 'Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(
+                            url: 'https://youtube.com',
+                          ),
+                        ),
+                      );
+                    },
+                    asset: 'assets/link.svg',
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
