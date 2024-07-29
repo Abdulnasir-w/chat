@@ -4,7 +4,7 @@ class Validator {
       return "Email Field Cannot be Empty";
     }
     final RegExp emailRegex = RegExp(
-      r'^[^@]+@[^@]+\.[^@]+',
+      r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
     );
     if (emailRegex.hasMatch(value)) {
       return "Enter a Valid Email";
