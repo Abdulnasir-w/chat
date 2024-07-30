@@ -1,5 +1,6 @@
 import 'package:chat/Components/custom_button.dart';
 import 'package:chat/Components/custom_text_form.dart';
+import 'package:chat/Screens/auth/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -25,7 +26,8 @@ class LoginScreen extends StatelessWidget {
                 height: 15,
               ),
               SvgPicture.asset(
-                'assets/login.svg', width: 450.0, // Adjust width as needed
+                'assets/login.svg',
+                width: 450.0,
                 height: 450.0,
               ),
               Form(
@@ -60,7 +62,8 @@ class LoginScreen extends StatelessWidget {
                       children: [
                         TextButton(
                           style: const ButtonStyle(
-                              splashFactory: InkSparkle.splashFactory),
+                            splashFactory: InkSparkle.splashFactory,
+                          ),
                           onPressed: () {},
                           child: Text(
                             "Forgot Password?",
@@ -99,7 +102,12 @@ class LoginScreen extends StatelessWidget {
                   TextButton(
                     style: const ButtonStyle(
                         splashFactory: InkSparkle.splashFactory),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpScreen()));
+                    },
                     child: const Text(
                       "Sign Up",
                       style: TextStyle(color: Colors.lightBlue),
