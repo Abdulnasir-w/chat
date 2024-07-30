@@ -1,5 +1,6 @@
 import 'package:chat/Components/custom_button.dart';
 import 'package:chat/Components/custom_text_form.dart';
+import 'package:chat/Screens/auth/forgot_screen.dart';
 import 'package:chat/Screens/auth/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -64,7 +65,13 @@ class LoginScreen extends StatelessWidget {
                           style: const ButtonStyle(
                             splashFactory: InkSparkle.splashFactory,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgotScreen()));
+                          },
                           child: Text(
                             "Forgot Password?",
                             style: Theme.of(context).textTheme.bodyMedium,
@@ -89,15 +96,14 @@ class LoginScreen extends StatelessWidget {
                 thickness: .5,
                 color: Colors.black,
               ),
-              // const SizedBox(
-              //   height: 10,
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Don't Have an Accountv? ",
-                    style: TextStyle(color: Colors.black),
+                    "Don't Have an Account? ",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "fonts/Roboto-Regular.ttf"),
                   ),
                   TextButton(
                     style: const ButtonStyle(

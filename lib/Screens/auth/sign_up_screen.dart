@@ -14,6 +14,7 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
+    final TextEditingController userNameController = TextEditingController();
     final formKey = GlobalKey<FormState>();
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
@@ -38,6 +39,17 @@ class SignUpScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     MyCustomTextFormField(
+                      label: 'User Name',
+                      hint: 'Enter Your User Name',
+                      controller: userNameController,
+                      prefixIcon: Icons.person_2_outlined,
+                      keyBoardType: TextInputType.name,
+                      validator: (value) => Validator.validateField(value),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    MyCustomTextFormField(
                       label: 'Email',
                       hint: 'Enter Your Email',
                       controller: emailController,
@@ -56,21 +68,6 @@ class SignUpScreen extends StatelessWidget {
                       keyBoardType: TextInputType.text,
                       isPassField: true,
                       validator: (value) => Validator.validateField(value),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          style: const ButtonStyle(
-                            splashFactory: InkSparkle.splashFactory,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            "Forgot Password?",
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
