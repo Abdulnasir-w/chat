@@ -1,3 +1,4 @@
+import 'package:chat/Components/custom_button.dart';
 import 'package:chat/Components/custom_text_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,22 +12,28 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController emailController = TextEditingController();
-
     final TextEditingController passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SvgPicture.asset('assets/login.svg'),
+              const SizedBox(
+                height: 15,
+              ),
+              SvgPicture.asset(
+                'assets/login.svg', width: 450.0, // Adjust width as needed
+                height: 450.0,
+              ),
               Form(
                 autovalidateMode: AutovalidateMode.always,
                 key: formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     MyCustomTextFormField(
                       label: 'Email',
@@ -37,7 +44,7 @@ class LoginScreen extends StatelessWidget {
                       validator: (value) => Validator.validateEmail(value),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     MyCustomTextFormField(
                       label: 'Password',
@@ -48,9 +55,58 @@ class LoginScreen extends StatelessWidget {
                       isPassField: true,
                       validator: (value) => Validator.validateField(value),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          style: const ButtonStyle(
+                              splashFactory: InkSparkle.splashFactory),
+                          onPressed: () {},
+                          child: Text(
+                            "Forgot Password?",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              MyCustomButton(
+                title: 'Login',
+                onPressed: () {},
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Divider(
+                thickness: .5,
+                color: Colors.black,
+              ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't Have an Accountv? ",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  TextButton(
+                    style: const ButtonStyle(
+                        splashFactory: InkSparkle.splashFactory),
+                    onPressed: () {},
+                    child: const Text(
+                      "Sign Up",
+                      style: TextStyle(color: Colors.lightBlue),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),
