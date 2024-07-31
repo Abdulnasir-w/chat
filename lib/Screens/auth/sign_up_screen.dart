@@ -1,21 +1,39 @@
 import 'package:chat/Components/custom_text_form.dart';
+import 'package:chat/Provider/auth_provider.dart';
 import 'package:chat/Screens/auth/login_screen.dart';
 import 'package:chat/Theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../Components/custom_button.dart';
 import '../../Utils/validation.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    userNameController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController userNameController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
+    final userProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       body: Padding(
@@ -77,7 +95,13 @@ class SignUpScreen extends StatelessWidget {
               ),
               MyCustomButton(
                 title: 'Sign Up',
-                onPressed: () {},
+                onPressed: () async {
+                  String userName = userNameController.text.trim();
+                  String email = emailController.text.trim();
+                  String password = passwordController.text;
+                  await userProvider.signUpWithEmailAndPassword(
+                      userName, email, password, context);
+                },
               ),
               const SizedBox(
                 height: 10,
