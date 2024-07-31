@@ -1,9 +1,12 @@
 import 'package:chat/Components/custom_button.dart';
 import 'package:chat/Components/custom_text_form.dart';
+import 'package:chat/Provider/auth_provider.dart';
 import 'package:chat/Screens/auth/forgot_screen.dart';
 import 'package:chat/Screens/auth/sign_up_screen.dart';
+import 'package:chat/Screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../Theme/app_theme.dart';
 import '../../Utils/validation.dart';
@@ -29,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       body: Padding(
@@ -100,7 +104,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               MyCustomButton(
                 title: 'Login',
-                onPressed: () {},
+                onPressed: () async {
+                  String email = emailController.text.trim();
+                  String password = passwordController.text;
+                  await userProvider.login(email, password, context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                },
               ),
               const SizedBox(
                 height: 10,

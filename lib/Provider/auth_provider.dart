@@ -20,11 +20,13 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
       }
     } on AuthException catch (error) {
+      print("the login AuthException Error is ::::: $error");
       if (context.mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));
       }
     } catch (e) {
+      print("The login try and catch block error is ::::::=> $e");
       if (context.mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -55,11 +57,13 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
       }
     } on AuthException catch (error) {
+      print("the AuthException Error is ::::: $error");
       if (context.mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));
       }
     } catch (e) {
+      print("The try and catch block error is ::::::=> $e");
       if (context.mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
