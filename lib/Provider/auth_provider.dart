@@ -51,7 +51,7 @@ class AuthProvider extends ChangeNotifier {
           final updateResponse = await _supabase.from("Profiles").insert([
             {
               'id': response.user!.id,
-              'user name': userName,
+              'userName': userName,
             }
           ]);
           if (updateResponse.error != null) {
@@ -91,6 +91,28 @@ class AuthProvider extends ChangeNotifier {
         }
         return;
       }
+    }
+  }
+
+  // Forgot Password
+
+  Future<void> forgotPassword() async {
+    ////
+  }
+
+  // Sign Out
+
+  Future<void> signOut(BuildContext context) async {
+    try {
+      await _supabase.auth.signOut();
+
+      notifyListeners();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Sign Out Successfully")),
+      );
+    } catch (e) {
+      print(e);
     }
   }
 }
