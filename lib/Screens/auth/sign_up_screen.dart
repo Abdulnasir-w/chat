@@ -21,14 +21,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
     userNameController.dispose();
+  }
+
+  void signUp(userProvider) async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        String userName = userNameController.text.trim();
+        String email = emailController.text.trim();
+        String password = passwordController.text;
+        await userProvider.signUpWithEmailAndPassword(
+            userName, email, password, context);
+        if (mounted) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()));
+        }
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        throw Exception(e);
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -95,14 +123,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               MyCustomButton(
                 title: 'Sign Up',
-                onPressed: () async {
-                  String userName = userNameController.text.trim();
-                  String email = emailController.text.trim();
-                  String password = passwordController.text;
-                  await userProvider.signUpWithEmailAndPassword(
-                      userName, email, password, context);
-                },
-                isLoading: false,
+                onPressed: () => signUp(userProvider),
+                isLoading: isLoading,
               ),
               const SizedBox(
                 height: 10,
