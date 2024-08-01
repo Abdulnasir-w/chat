@@ -22,12 +22,37 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  void login(userProvider) async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        String email = emailController.text.trim();
+        String password = passwordController.text;
+        await userProvider.login(email, password, context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      } catch (e) {
+        print(e);
+        setState(() {
+          isLoading = false;
+        });
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -104,13 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               MyCustomButton(
                 title: 'Login',
-                onPressed: () async {
-                  String email = emailController.text.trim();
-                  String password = passwordController.text;
-                  await userProvider.login(email, password, context);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
-                },
+                isLoading: isLoading,
+                onPressed: () => login(userProvider),
               ),
               const SizedBox(
                 height: 10,

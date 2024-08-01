@@ -102,6 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   await userProvider.signUpWithEmailAndPassword(
                       userName, email, password, context);
                 },
+                isLoading: false,
               ),
               const SizedBox(
                 height: 10,
