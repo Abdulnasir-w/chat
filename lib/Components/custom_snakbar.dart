@@ -31,8 +31,8 @@ class CustomSnackbar extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline),
-                SizedBox(
+                SizedBox(width: 104, height: 50, child: Text("")),
+                const SizedBox(
                   width: 30,
                 ),
                 Expanded(
