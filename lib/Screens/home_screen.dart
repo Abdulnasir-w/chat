@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
                       message:
                           "SnakBar is the worst thing i trying but i love it how you can also try it",
                       backgroundColor: Colors.blue,
+                      type: SnackbarType.error,
                       alignment: Alignment.topCenter);
                 },
                 child: const Text("Snak Bar "),

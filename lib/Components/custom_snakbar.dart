@@ -1,20 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+enum SnackbarType { success, error }
+
 class CustomSnackbar extends StatelessWidget {
   final String message;
   final Color? backgroundColor;
   final Alignment alignment;
+  final SnackbarType type;
 
   const CustomSnackbar({
     super.key,
     required this.message,
     required this.backgroundColor,
     required this.alignment,
+    required this.type,
   });
 
   @override
   Widget build(BuildContext context) {
+    String animationPath;
+    switch (type) {
+      case SnackbarType.success:
+        animationPath = 'assets/success.json';
+        break;
+      case SnackbarType.error:
+        animationPath = 'assets/error.json';
+        break;
+      default:
+        animationPath =
+            'assets/default0.json'; // Add a default animation if needed
+    }
     return SafeArea(
       child: Align(
         alignment: alignment,
@@ -38,12 +54,10 @@ class CustomSnackbar extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),
                       shape: BoxShape.circle),
-                  child: Center(
-                    child: Lottie.asset(
-                      "assets/error.json",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  child: Lottie.asset(animationPath,
+                      fit: BoxFit.scaleDown,
+                      backgroundLoading: false,
+                      alignment: Alignment.center),
                 ),
                 const SizedBox(
                   width: 10,
@@ -69,6 +83,7 @@ class CustomSnackbar extends StatelessWidget {
     required String message,
     required Color backgroundColor,
     required Alignment alignment,
+    required SnackbarType type,
   }) {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
@@ -76,6 +91,7 @@ class CustomSnackbar extends StatelessWidget {
         message: message,
         backgroundColor: backgroundColor,
         alignment: alignment,
+        type: type,
       ),
     );
 
