@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class CustomSnackbar extends StatelessWidget {
   final String message;
@@ -22,27 +23,37 @@ class CustomSnackbar extends StatelessWidget {
           child: Container(
             width: 350,
             height: 70,
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.all(16),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(width: 104, height: 50, child: Text("")),
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      shape: BoxShape.circle),
+                  child: Center(
+                    child: Lottie.asset(
+                      "assets/error.json",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 const SizedBox(
-                  width: 30,
+                  width: 10,
                 ),
                 Expanded(
                   child: Text(
                     message,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ),
               ],
