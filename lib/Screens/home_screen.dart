@@ -19,7 +19,6 @@ class HomeScreen extends StatelessWidget {
                   CustomSnackbar.showCustomSnackbar(context,
                       message:
                           "SnakBar is the worst thing i trying but i love it how you can also try it",
-                      backgroundColor: Color(0xffffb700),
                       type: SnackbarType.warnning,
                       alignment: Alignment.topCenter);
                 },

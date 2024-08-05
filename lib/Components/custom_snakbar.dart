@@ -88,7 +88,6 @@ class CustomSnackbar extends StatelessWidget {
   static void showCustomSnackbar(
     BuildContext context, {
     required String message,
-    required Color backgroundColor,
     required Alignment alignment,
     required SnackbarType type,
   }) {
@@ -105,7 +104,7 @@ class CustomSnackbar extends StatelessWidget {
     overlay.insert(overlayEntry);
 
     // Remove the overlay entry after a duration
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       overlayEntry.remove();
     });
   }

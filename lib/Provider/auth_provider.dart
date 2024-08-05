@@ -28,18 +28,14 @@ class AuthProvider extends ChangeNotifier {
         //     .showSnackBar(SnackBar(content: Text(error.toString())));
         CustomSnackbar.showCustomSnackbar(context,
             message: error.toString(),
-            backgroundColor: Colors.red,
             type: SnackbarType.error,
             alignment: Alignment.topCenter);
       }
     } catch (e) {
       print("The login try and catch block error is ::::::=> $e");
       if (context.mounted) {
-        // ScaffoldMessenger.of(context)
-        //     .showSnackBar(SnackBar(content: Text(e.toString())));
         CustomSnackbar.showCustomSnackbar(context,
             message: e.toString(),
-            backgroundColor: Colors.red,
             type: SnackbarType.error,
             alignment: Alignment.topCenter);
       }
@@ -80,7 +76,6 @@ class AuthProvider extends ChangeNotifier {
             if (context.mounted) {
               CustomSnackbar.showCustomSnackbar(context,
                   message: 'Too many requests. Please try again later.',
-                  backgroundColor: const Color(0xffffb700),
                   type: SnackbarType.warnning,
                   alignment: Alignment.topCenter);
             }
@@ -92,7 +87,6 @@ class AuthProvider extends ChangeNotifier {
           if (context.mounted) {
             CustomSnackbar.showCustomSnackbar(context,
                 message: error.toString(),
-                backgroundColor: Colors.red,
                 type: SnackbarType.error,
                 alignment: Alignment.topCenter);
           }
@@ -103,7 +97,6 @@ class AuthProvider extends ChangeNotifier {
         if (context.mounted) {
           CustomSnackbar.showCustomSnackbar(context,
               message: e.toString(),
-              backgroundColor: Colors.red,
               type: SnackbarType.error,
               alignment: Alignment.topCenter);
         }
