@@ -5,14 +5,12 @@ enum SnackbarType { success, error, warnning }
 
 class CustomSnackbar extends StatelessWidget {
   final String message;
-  final Color? backgroundColor;
   final Alignment alignment;
   final SnackbarType type;
 
   const CustomSnackbar({
     super.key,
     required this.message,
-    required this.backgroundColor,
     required this.alignment,
     required this.type,
   });
@@ -20,15 +18,19 @@ class CustomSnackbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String animationPath;
+    Color? color;
     switch (type) {
       case SnackbarType.success:
         animationPath = 'assets/success.json';
+        color = Colors.green;
         break;
       case SnackbarType.error:
         animationPath = 'assets/error.json';
+        color = Colors.red;
         break;
       case SnackbarType.warnning:
         animationPath = 'assets/warning.json';
+        color = const Color(0xffffb700);
         break;
       default:
         animationPath =
@@ -45,7 +47,7 @@ class CustomSnackbar extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: backgroundColor,
+              color: color,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
@@ -94,7 +96,6 @@ class CustomSnackbar extends StatelessWidget {
     final overlayEntry = OverlayEntry(
       builder: (context) => CustomSnackbar(
         message: message,
-        backgroundColor: backgroundColor,
         alignment: alignment,
         type: type,
       ),

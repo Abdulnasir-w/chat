@@ -80,7 +80,7 @@ class AuthProvider extends ChangeNotifier {
             if (context.mounted) {
               CustomSnackbar.showCustomSnackbar(context,
                   message: 'Too many requests. Please try again later.',
-                  backgroundColor: Colors.yellow,
+                  backgroundColor: const Color(0xffffb700),
                   type: SnackbarType.warnning,
                   alignment: Alignment.topCenter);
             }
