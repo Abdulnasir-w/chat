@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-enum SnackbarType { success, error }
+enum SnackbarType { success, error, warnning }
 
 class CustomSnackbar extends StatelessWidget {
   final String message;
@@ -26,6 +26,9 @@ class CustomSnackbar extends StatelessWidget {
         break;
       case SnackbarType.error:
         animationPath = 'assets/error.json';
+        break;
+      case SnackbarType.warnning:
+        animationPath = 'assets/warning.json';
         break;
       default:
         animationPath =
@@ -54,10 +57,12 @@ class CustomSnackbar extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),
                       shape: BoxShape.circle),
-                  child: Lottie.asset(animationPath,
-                      fit: BoxFit.scaleDown,
-                      backgroundLoading: false,
-                      alignment: Alignment.center),
+                  child: Lottie.asset(
+                    animationPath,
+                    fit: BoxFit.scaleDown,
+                    backgroundLoading: true,
+                    alignment: Alignment.center,
+                  ),
                 ),
                 const SizedBox(
                   width: 10,

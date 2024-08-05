@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../Components/custom_snakbar.dart';
+
 class AuthProvider extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   User? _user;
@@ -22,14 +24,24 @@ class AuthProvider extends ChangeNotifier {
     } on AuthException catch (error) {
       print("the login AuthException Error is ::::: $error");
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(error.toString())));
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(SnackBar(content: Text(error.toString())));
+        CustomSnackbar.showCustomSnackbar(context,
+            message: error.toString(),
+            backgroundColor: Colors.red,
+            type: SnackbarType.error,
+            alignment: Alignment.topCenter);
       }
     } catch (e) {
       print("The login try and catch block error is ::::::=> $e");
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(SnackBar(content: Text(e.toString())));
+        CustomSnackbar.showCustomSnackbar(context,
+            message: e.toString(),
+            backgroundColor: Colors.red,
+            type: SnackbarType.error,
+            alignment: Alignment.topCenter);
       }
     }
   }
@@ -66,11 +78,11 @@ class AuthProvider extends ChangeNotifier {
           retryCount++;
           if (retryCount == maxRetries) {
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content:
-                        Text('Too many requests. Please try again later.')),
-              );
+              CustomSnackbar.showCustomSnackbar(context,
+                  message: 'Too many requests. Please try again later.',
+                  backgroundColor: Colors.yellow,
+                  type: SnackbarType.warnning,
+                  alignment: Alignment.topCenter);
             }
             return;
           }
@@ -78,16 +90,22 @@ class AuthProvider extends ChangeNotifier {
         } else {
           print("the Sign Up AuthException Error is ::::: $error");
           if (context.mounted) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(error.toString())));
+            CustomSnackbar.showCustomSnackbar(context,
+                message: error.toString(),
+                backgroundColor: Colors.red,
+                type: SnackbarType.error,
+                alignment: Alignment.topCenter);
           }
           return;
         }
       } catch (e) {
         print("The Sign Up try and catch block error is ::::::=> $e");
         if (context.mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(e.toString())));
+          CustomSnackbar.showCustomSnackbar(context,
+              message: e.toString(),
+              backgroundColor: Colors.red,
+              type: SnackbarType.error,
+              alignment: Alignment.topCenter);
         }
         return;
       }

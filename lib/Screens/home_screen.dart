@@ -19,15 +19,15 @@ class HomeScreen extends StatelessWidget {
                   CustomSnackbar.showCustomSnackbar(context,
                       message:
                           "SnakBar is the worst thing i trying but i love it how you can also try it",
-                      backgroundColor: Colors.blue,
-                      type: SnackbarType.error,
+                      backgroundColor: Color(0xffffb700),
+                      type: SnackbarType.warnning,
                       alignment: Alignment.topCenter);
                 },
                 child: const Text("Snak Bar "),
               ),
             ),
             const Center(
-              child: const Text("Home Screen",
+              child: Text("Home Screen",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,

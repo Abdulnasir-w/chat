@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
         String password = passwordController.text;
         await userProvider.login(email, password, context);
         if (mounted) {
-          Navigator.push(context,
+          Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const HomeScreen()));
         }
       } catch (e) {
