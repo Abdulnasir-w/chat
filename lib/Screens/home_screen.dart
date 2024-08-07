@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
                   CustomSnackbar.showCustomSnackbar(context,
                       message:
                           "SnakBar is the worst thing i trying but i love it how you can also try it",
-                      type: SnackbarType.warnning,
+                      type: SnackbarType.error,
                       alignment: Alignment.topCenter);
                 },
                 child: const Text("Snak Bar "),

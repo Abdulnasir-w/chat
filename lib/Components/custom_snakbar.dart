@@ -21,15 +21,15 @@ class CustomSnackbar extends StatelessWidget {
     Color? color;
     switch (type) {
       case SnackbarType.success:
-        animationPath = 'assets/success.json';
+        animationPath = 'assets/animation/success.json';
         color = Colors.green;
         break;
       case SnackbarType.error:
-        animationPath = 'assets/error.json';
+        animationPath = 'assets/animation/error.json';
         color = Colors.red;
         break;
       case SnackbarType.warnning:
-        animationPath = 'assets/warning.json';
+        animationPath = 'assets/animation/warning.json';
         color = const Color(0xffffb700);
         break;
       default:
@@ -74,7 +74,10 @@ class CustomSnackbar extends StatelessWidget {
                     message,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontFamily: "Roboto"),
                   ),
                 ),
               ],
@@ -104,7 +107,7 @@ class CustomSnackbar extends StatelessWidget {
     overlay.insert(overlayEntry);
 
     // Remove the overlay entry after a duration
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 4), () {
       overlayEntry.remove();
     });
   }
