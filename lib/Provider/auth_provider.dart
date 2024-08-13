@@ -60,6 +60,7 @@ class AuthProvider extends ChangeNotifier {
             {
               'id': response.user!.id,
               'userName': userName,
+              'email': email,
             }
           ]);
           if (updateResponse.error != null) {
