@@ -7,7 +7,7 @@ class ChatProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _messages = [];
   String? currentChatId;
 
-  // Constructor that initializes the Supabase client and starts listening for chat changes
+  // Constructor that initializaes the Supabase client and starts listening for chat changes
   ChatProvider(this._supabaseClient) {
     _listenForChatChanges();
   }
