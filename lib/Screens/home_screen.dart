@@ -1,39 +1,32 @@
 import 'package:chat/Components/custom_snakbar.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: Colors.green,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  CustomSnackbar.showCustomSnackbar(context,
-                      message:
-                          "SnakBar is the worst thing i trying but i love it how you can also try it",
-                      type: SnackbarType.success,
-                      alignment: Alignment.topCenter);
-                },
-                child: const Text("Snak Bar "),
-              ),
+      backgroundColor: Colors.cyan[100],
+      appBar: AppBar(
+        title: Text("Chats"),
+      ),
+      body: ListView.builder(
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text("Nasir"),
+            subtitle: Text("Software Engineering"),
+            leading: CircleAvatar(
+              child: Icon(Icons.person),
             ),
-            const Center(
-              child: Text("Home Screen",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  )),
-            )
-          ],
-        ),
+          );
+        },
       ),
     );
   }

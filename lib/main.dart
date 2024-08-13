@@ -1,4 +1,5 @@
 import 'package:chat/Provider/auth_provider.dart';
+import 'package:chat/Provider/chat_provider.dart';
 import 'package:chat/Screens/auth/login_screen.dart';
 import 'package:chat/Screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +25,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(
+            create: (_) => ChatProvider(Supabase.instance.client)),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomeScreen(),
+      ),
     );
   }
 }
