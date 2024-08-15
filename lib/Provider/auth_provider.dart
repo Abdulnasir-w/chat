@@ -56,7 +56,7 @@ class AuthProvider extends ChangeNotifier {
           password: password,
         );
         if (response.user != null) {
-          final updateResponse = await _supabase.from("Profiles").insert([
+          final updateResponse = await _supabase.from("profiles").insert([
             {
               'id': response.user!.id,
               'userName': userName,

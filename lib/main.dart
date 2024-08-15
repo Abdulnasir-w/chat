@@ -1,5 +1,6 @@
 import 'package:chat/Provider/auth_provider.dart';
-import 'package:chat/Provider/chat_provider.dart';
+import 'package:chat/Provider/message_provider.dart';
+import 'package:chat/Screens/auth/login_screen.dart';
 import 'package:chat/Screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,12 +28,12 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(
-            create: (_) => ChatProvider(Supabase.instance.client)),
+        // ChangeNotifierProvider(
+        //     create: (_) => MessProvider(Supabase.instance.client)),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
+        home: LoginScreen(),
       ),
     );
   }

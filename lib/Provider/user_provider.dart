@@ -1,3 +1,4 @@
+import 'package:chat/Components/custom_snakbar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,7 +17,22 @@ class UserProvider extends ChangeNotifier {
           .eq("id", userId)
           .single();
 
-      final data = response.data as Map
-    } catch (e) {}
+      if (response.isNotEmpty) {
+        _user = UserModel.fromMap(response) as User?;
+        notifyListeners();
+      } else {
+        const CustomSnackbar(
+          message: "Data Not Found",
+          alignment: Alignment.bottomCenter,
+          type: SnackbarType.warnning,
+        );
+      }
+    } catch (e) {
+      const CustomSnackbar(
+        message: "Error While Fetching Data",
+        alignment: Alignment.bottomCenter,
+        type: SnackbarType.error,
+      );
+    }
   }
 }
