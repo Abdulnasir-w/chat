@@ -8,12 +8,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var env = DotEnv()..load(['.env']);
-  await Supabase.initialize(
-    url: env["SUPABASE_URL"] ?? "",
-    anonKey: env["SUPABASE_KEY"] ?? "",
-  );
-  runApp(ProviderScope(child: const ChatApp()));
+
+  final env = DotEnv()..load(['.env']);
+
+  try {
+    await Supabase.initialize(
+      url: env["SUPABASE_URL"]!,
+      anonKey: env["SUPABASE_KEY"]!,
+    );
+  } catch (e) {
+    throw Exception('Failed to initialize Supabase: $e');
+  }
+
+  runApp(const ProviderScope(child: ChatApp()));
 }
 
 class ChatApp extends ConsumerWidget {
@@ -21,22 +28,17 @@ class ChatApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
     final scaffoldKey = ref.watch(scaffoldMessengerKeyProvider);
 
-    return Consumer(
-      builder: (context, ref, _) {
-        final themeMode = ref.watch(themeProvider);
-        return MaterialApp(
-          scaffoldMessengerKey: scaffoldKey,
-          title: 'Flutter Chat App',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme(),
-          darkTheme: AppTheme.darkTheme(),
-
-          themeMode: themeMode,
-          //home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        );
-      },
+    return MaterialApp(
+      scaffoldMessengerKey: scaffoldKey,
+      title: 'Flutter Chat App',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme(),
+      darkTheme: AppTheme.darkTheme(),
+      themeMode: themeMode,
+      // home: const AuthWrapper(), // Add your initial screen
     );
   }
 }
