@@ -1,3 +1,5 @@
+import 'package:chat/core/exceptions/app_exceptions.dart';
+import 'package:chat/core/utils/extensions/snakbar_extension.dart';
 import 'package:chat/core/utils/helpers/validator.dart';
 import 'package:chat/core/utils/widgets/custom_button.dart';
 import 'package:chat/features/auth/presentation/screens/login_screen.dart';
@@ -29,11 +31,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  Future<void> _register(WidgetRef ref) async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final userName = userNameController.text.trim();
+    final phone = phoneController.text.trim();
+
+    if (formKey.currentState!.validate()) {
+      await ref
+          .read(authContollerProvider.notifier)
+          .signUpWithEmailAndPassword(
+            email: email,
+            password: password,
+            userName: userName,
+            phone: phone,
+          );
+
+      ref.listen(authContollerProvider, (previous, next) {
+        next.whenOrNull(
+          data: (user) {
+            user != null
+                ? Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                )
+                : null;
+
+            context.showSuccessSnackbar('Account created successfully');
+          },
+          error: (error, _) {
+            final message =
+                error is AppAuthException
+                    ? error.message
+                    : 'Failed to create account Please TryAgain later!';
+            if (context.mounted) {
+              context.showErrorSnackbar(message);
+            }
+          },
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset:
-          true, // Add this to allow resizing when the keyboard appears
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -112,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         final authState = ref.watch(authContollerProvider);
                         return CustomButton(
                           title: "Register",
-                          onPressed: () {},
+                          onPressed: () => _register(ref),
                           state: authState,
                         );
                       },

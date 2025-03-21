@@ -33,6 +33,7 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
     required String email,
     required String password,
     required String userName,
+    required String phone,
   }) async {
     state = AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -40,6 +41,7 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
         email: email,
         password: password,
         userName: userName,
+        phone: phone,
       );
     });
   }

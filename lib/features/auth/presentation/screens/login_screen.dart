@@ -1,3 +1,5 @@
+import 'package:chat/core/exceptions/app_exceptions.dart';
+import 'package:chat/core/utils/extensions/snakbar_extension.dart';
 import 'package:chat/core/utils/helpers/validator.dart';
 import 'package:chat/core/utils/widgets/custom_button.dart';
 import 'package:chat/features/auth/presentation/screens/forgot_screen.dart';
@@ -17,6 +19,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -25,10 +28,42 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
   }
 
+  Future<void> _login(WidgetRef ref) async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (formKey.currentState!.validate()) {
+      await ref
+          .read(authContollerProvider.notifier)
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      ref.listen(authContollerProvider, (previous, next) {
+        next.whenOrNull(
+          data: (user) {
+            user != null
+                ? Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                )
+                : null;
+            context.showSuccessSnackbar('Login successful');
+          },
+          error: (error, _) {
+            final message =
+                error is AppAuthException
+                    ? error.message
+                    : 'Failed to Login Please TryAgain later!';
+            if (context.mounted) {
+              context.showErrorSnackbar(message);
+            }
+          },
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -93,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     return CustomButton(
                       title: "Login",
-                      onPressed: () {},
+                      onPressed: () => _login(ref),
                       state: authState,
                     );
                   },

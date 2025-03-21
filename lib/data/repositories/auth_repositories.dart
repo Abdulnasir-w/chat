@@ -39,12 +39,13 @@ class AuthRepository {
     required String email,
     required String password,
     required String userName,
+    required String phone,
   }) async {
     try {
       final response = await _supabase.auth.signUp(
         email: email,
         password: password,
-        data: {"name": userName},
+        data: {"name": userName, "phone": phone},
       );
       return _getUserFromAuthResponse(response as AuthResponse);
     } on AuthException catch (e) {

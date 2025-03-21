@@ -1,3 +1,5 @@
+import 'package:chat/core/exceptions/app_exceptions.dart';
+import 'package:chat/core/utils/extensions/snakbar_extension.dart';
 import 'package:chat/core/utils/helpers/validator.dart';
 import 'package:chat/core/utils/widgets/custom_button.dart';
 import 'package:chat/features/auth/presentation/screens/login_screen.dart';
@@ -61,7 +63,35 @@ class ForgotScreen extends ConsumerWidget {
                 ),
                 CustomButton(
                   title: "Send Reset Eamil",
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (formkey.currentState!.validate()) {
+                      await ref
+                          .read(authContollerProvider.notifier)
+                          .resetPassword(email: emailController.text.trim());
+
+                      ref.listen(authContollerProvider, (prevous, next) {
+                        next.whenOrNull(
+                          data: (data) {
+                            if (data == null && context.mounted) {
+                              context.showSuccessSnackbar(
+                                'Password reset email sent successfully!',
+                              );
+                              Navigator.pop(context);
+                            }
+                          },
+                          error: (error, _) {
+                            final message =
+                                error is AppAuthException
+                                    ? error.message
+                                    : 'Failed to send reset email';
+                            if (context.mounted) {
+                              context.showErrorSnackbar(message);
+                            }
+                          },
+                        );
+                      });
+                    }
+                  },
                   state: authState,
                 ),
               ],
