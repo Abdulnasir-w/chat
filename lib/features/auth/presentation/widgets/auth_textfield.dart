@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AuthTextfield extends StatelessWidget {
+class AuthTextfield extends StatefulWidget {
   final String label;
   final String hint;
   final TextEditingController controller;
@@ -23,32 +23,106 @@ class AuthTextfield extends StatelessWidget {
   });
 
   @override
+  State<AuthTextfield> createState() => _AuthTextfieldState();
+}
+
+class _AuthTextfieldState extends State<AuthTextfield> {
+  bool isVisible = true;
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {}); // Trigger rebuild when focus changes
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    OutlineInputBorder border = OutlineInputBorder(
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isFocused = _focusNode.hasFocus;
+
+    final OutlineInputBorder baseBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(13),
-      borderSide: BorderSide(color: Colors.black),
+      borderSide: BorderSide(
+        color: isDarkMode ? colorScheme.onSurface : colorScheme.primary,
+      ),
     );
     return TextFormField(
-      controller: controller,
-      keyboardType: type,
-      textInputAction: action,
+      focusNode: _focusNode,
+      obscureText: widget.isPassField ? isVisible : false,
+      controller: widget.controller,
+      onTapOutside: (event) {
+        _focusNode.unfocus();
+      },
+      onTap: () {
+        FocusScope.of(context).requestFocus(_focusNode);
+      },
+      keyboardType: widget.type,
+      textInputAction: widget.action,
       decoration: InputDecoration(
-        hintText: hint,
-        labelText: label,
-        prefixIcon: Icon(prefixIcon),
-
-        focusedBorder: border.copyWith(
-          borderSide: BorderSide(color: Colors.black, width: 1.5),
+        hintText: widget.hint,
+        labelText: widget.label,
+        hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          color: isFocused ? colorScheme.primary : colorScheme.onSurface,
         ),
-        enabledBorder: border.copyWith(
-          borderSide: BorderSide(color: Colors.black),
+        labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          color:
+              isFocused
+                  ? isDarkMode
+                      ? colorScheme.onSurface
+                      : colorScheme.primary
+                  : colorScheme.onSurface,
+          fontWeight: FontWeight.bold,
         ),
-        errorBorder: border.copyWith(borderSide: BorderSide(color: Colors.red)),
-        focusedErrorBorder: border.copyWith(
-          borderSide: BorderSide(color: Colors.red, width: 1.5),
+        prefixIcon: Icon(
+          widget.prefixIcon,
+          color: isFocused ? colorScheme.primary : colorScheme.onSurface,
+        ),
+        suffixIcon:
+            widget.isPassField
+                ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isVisible = !isVisible;
+                    });
+                  },
+                  icon: Icon(
+                    isVisible
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color:
+                        isFocused ? colorScheme.primary : colorScheme.onSurface,
+                  ),
+                )
+                : null,
+        filled: true,
+        fillColor: colorScheme.surfaceContainerHighest,
+        focusedBorder: baseBorder.copyWith(
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+        ),
+        enabledBorder: baseBorder,
+        errorBorder: baseBorder.copyWith(
+          borderSide: BorderSide(color: colorScheme.error),
+        ),
+        focusedErrorBorder: baseBorder.copyWith(
+          borderSide: BorderSide(color: colorScheme.error, width: 1.5),
         ),
       ),
-      validator: validator,
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        color: colorScheme.primary,
+      ), // Text color
+      validator: widget.validator,
     );
   }
 }

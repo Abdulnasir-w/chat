@@ -9,9 +9,7 @@ class AppTheme {
       secondary: Color(0xFFFF6F61), // Coral
       surface: Color(0xFFF5F5F5), // Soft Cream
       onSurface: Color(0xFF333333), // Charcoal
-      surfaceContainerHighest: Color(
-        0xFFE3F2FD,
-      ), // Light Blue-Gray for receiver bubbles
+      surfaceContainerHighest: Color.fromARGB(255, 213, 223, 230),
     );
 
     return ThemeData(
@@ -33,10 +31,7 @@ class AppTheme {
           .apply(fontFamily: 'Poppins')
           .copyWith(
             bodyLarge: TextStyle(color: colorScheme.onSurface, fontSize: 16),
-            bodyMedium: TextStyle(
-              color: Color(0xFF666666),
-              fontSize: 14,
-            ), // Slate Gray
+            bodyMedium: TextStyle(color: Color(0xFF333333), fontSize: 14),
             titleLarge: TextStyle(fontWeight: FontWeight.bold),
           ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -49,6 +44,7 @@ class AppTheme {
           textStyle: TextStyle(
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
         ),
       ),
@@ -61,21 +57,18 @@ class AppTheme {
   }
 
   static ThemeData darkTheme() {
-    // Generate a color scheme from the primary Indigo Blue seed
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: Color(0xFF3F51B5), // Indigo Blue
+      seedColor: Color(0xFFBB86FC), // Muted Purple for Dark Mode
       brightness: Brightness.dark,
-      primary: Color(0xFF3F51B5), // Indigo Blue
+      primary: Color(0xFFBB86FC), // Adjusted Primary for Dark Mode
       secondary: Color(0xFFFF8A65), // Peach
       surface: Color(0xFF1A1A1A), // Deep Charcoal
       onSurface: Color(0xFFF0F0F0), // Off-White
-      surfaceContainerHighest: Color(
-        0xFF37474F,
-      ), // Dark Blue-Gray for receiver bubbles
+      surfaceContainerHighest: Color(0xFF2C2C2C), // Darker Background
     );
 
     return ThemeData(
-      useMaterial3: true, // Enable Material 3
+      useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
       appBarTheme: AppBarTheme(
@@ -93,10 +86,7 @@ class AppTheme {
           .apply(fontFamily: 'Poppins')
           .copyWith(
             bodyLarge: TextStyle(color: colorScheme.onSurface, fontSize: 16),
-            bodyMedium: TextStyle(
-              color: Color(0xFFA0A0A0),
-              fontSize: 14,
-            ), // Light Gray
+            bodyMedium: TextStyle(color: Color(0xFFA0A0A0), fontSize: 14),
             titleLarge: TextStyle(fontWeight: FontWeight.bold),
           ),
       elevatedButtonTheme: ElevatedButtonThemeData(

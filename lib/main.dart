@@ -32,12 +32,13 @@ class ChatApp extends ConsumerWidget {
 
     return MaterialApp(
       scaffoldMessengerKey: scaffoldKey,
+
       title: 'Flutter Chat App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode,
-      home: const LoginScreen(), // Add your initial screen
+      home: LoginScreen(), // Add your initial screen
     );
   }
 }

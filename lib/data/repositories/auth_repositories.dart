@@ -16,6 +16,7 @@ class AuthRepository {
     return UserModel.fromAuthUser(response.user as User);
   }
 
+  // sign in
   Future<UserModel> signInWithEmailPassword({
     required String email,
     required String password,
@@ -33,6 +34,7 @@ class AuthRepository {
     }
   }
 
+  // sign up
   Future<UserModel> signUpWithEmailPassword({
     required String email,
     required String password,
@@ -52,6 +54,17 @@ class AuthRepository {
     }
   }
 
+  // reset Password
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _supabase.auth.resetPasswordForEmail(email);
+    } on AuthException catch (e) {
+      throw AppAuthException(message: e.message);
+    } catch (e) {
+      throw AppException(message: 'Failed to sign up: ${e.toString()}');
+    }
+  }
+
   Future<void> signOut() async {
     try {
       await _supabase.auth.signOut();
@@ -61,7 +74,7 @@ class AuthRepository {
   }
 
   UserModel? get currentUser {
-    final user = _supabase.auth.currentUser!;
+    final user = _supabase.auth.currentUser;
     return user != null ? UserModel.fromAuthUser(user) : null;
   }
 }
