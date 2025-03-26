@@ -1,3 +1,4 @@
+import 'package:chat/core/utils/extensions/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,14 +32,7 @@ class CustomButton extends StatelessWidget {
                     color: Colors.white,
                   ),
                 )
-                : Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                  ),
-                ),
+                : Text(title, style: context.bodyLarge),
       ),
     );
   }

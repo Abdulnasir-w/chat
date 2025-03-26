@@ -16,6 +16,8 @@ dependencies:
   dotenv: ^4.2.0
   flutter_riverpod: ^2.6.1
   supabase_flutter: ^2.8.4
+  image_picker: ^1.1.2
+  gotrue: ^2.11.1
 
 dev_dependencies:
   flutter_test:

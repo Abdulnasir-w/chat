@@ -14,7 +14,7 @@ class SnakbarHelper {
     _showBaseSnakbar(
       context: context,
       message: message,
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: const Color.fromARGB(255, 108, 234, 173),
       textColor: Colors.white,
     );
   }
@@ -26,7 +26,7 @@ class SnakbarHelper {
     _showBaseSnakbar(
       context: context,
       message: message,
-      backgroundColor: Colors.red,
+      backgroundColor: const Color.fromARGB(255, 219, 112, 105),
       textColor: Colors.white,
     );
   }
@@ -38,7 +38,7 @@ class SnakbarHelper {
     _showBaseSnakbar(
       context: context,
       message: message,
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: const Color.fromARGB(255, 109, 199, 241),
       textColor: Colors.white,
     );
   }
@@ -53,6 +53,8 @@ class SnakbarHelper {
       content: Text(message),
       backgroundColor: backgroundColor,
       behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+      dismissDirection: DismissDirection.up,
       duration: Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(snakbar);

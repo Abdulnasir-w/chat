@@ -1,3 +1,4 @@
+import 'package:chat/core/utils/extensions/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 class AuthTextfield extends StatefulWidget {
@@ -8,6 +9,7 @@ class AuthTextfield extends StatefulWidget {
   final TextInputAction action;
   final IconData prefixIcon;
   final bool isPassField;
+  final TextCapitalization? capitalization;
   final String? Function(String?)? validator;
 
   const AuthTextfield({
@@ -19,6 +21,7 @@ class AuthTextfield extends StatefulWidget {
     required this.action,
     required this.prefixIcon,
     this.isPassField = false,
+    this.capitalization,
     this.validator,
   });
 
@@ -35,33 +38,32 @@ class _AuthTextfieldState extends State<AuthTextfield> {
     super.initState();
     _focusNode = FocusNode();
     _focusNode.addListener(() {
-      setState(() {}); // Trigger rebuild when focus changes
+      setState(() {});
     });
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final isFocused = _focusNode.hasFocus;
 
     final OutlineInputBorder baseBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(13),
       borderSide: BorderSide(
-        color: isDarkMode ? colorScheme.onSurface : colorScheme.primary,
+        color: isDarkMode ? context.onSurface : context.primary,
       ),
     );
     return TextFormField(
       focusNode: _focusNode,
       obscureText: widget.isPassField ? isVisible : false,
       controller: widget.controller,
+      textCapitalization: widget.capitalization ?? TextCapitalization.none,
       onTapOutside: (event) {
         _focusNode.unfocus();
       },
@@ -73,21 +75,21 @@ class _AuthTextfieldState extends State<AuthTextfield> {
       decoration: InputDecoration(
         hintText: widget.hint,
         labelText: widget.label,
-        hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          color: isFocused ? colorScheme.primary : colorScheme.onSurface,
+        hintStyle: context.bodyMedium.copyWith(
+          color: isFocused ? context.primary : context.onSurface,
         ),
-        labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        labelStyle: context.bodyMedium.copyWith(
           color:
               isFocused
                   ? isDarkMode
-                      ? colorScheme.onSurface
-                      : colorScheme.primary
-                  : colorScheme.onSurface,
+                      ? context.onSurface
+                      : context.primary
+                  : context.onSurface,
           fontWeight: FontWeight.bold,
         ),
         prefixIcon: Icon(
           widget.prefixIcon,
-          color: isFocused ? colorScheme.primary : colorScheme.onSurface,
+          color: isFocused ? context.primary : context.onSurface,
         ),
         suffixIcon:
             widget.isPassField
@@ -101,26 +103,25 @@ class _AuthTextfieldState extends State<AuthTextfield> {
                     isVisible
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
-                    color:
-                        isFocused ? colorScheme.primary : colorScheme.onSurface,
+                    color: isFocused ? context.primary : context.onSurface,
                   ),
                 )
                 : null,
         filled: true,
-        fillColor: colorScheme.surfaceContainerHighest,
+        fillColor: context.surfaceContainerHighest,
         focusedBorder: baseBorder.copyWith(
-          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+          borderSide: BorderSide(color: context.primary, width: 1.5),
         ),
         enabledBorder: baseBorder,
         errorBorder: baseBorder.copyWith(
-          borderSide: BorderSide(color: colorScheme.error),
+          borderSide: BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: baseBorder.copyWith(
-          borderSide: BorderSide(color: colorScheme.error, width: 1.5),
+          borderSide: BorderSide(color: Colors.red, width: 1.5),
         ),
       ),
-      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-        color: colorScheme.primary,
+      style: context.bodyMedium.copyWith(
+        color: isFocused ? context.primary : context.onSurface,
       ), // Text color
       validator: widget.validator,
     );

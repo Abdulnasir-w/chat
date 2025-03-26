@@ -1,10 +1,12 @@
 import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/core/utils/extensions/snakbar_extension.dart';
+import 'package:chat/core/utils/extensions/theme_extension.dart';
 import 'package:chat/core/utils/helpers/validator.dart';
 import 'package:chat/core/utils/widgets/custom_button.dart';
 import 'package:chat/features/auth/presentation/screens/forgot_screen.dart';
 import 'package:chat/features/auth/presentation/screens/register_screen.dart';
 import 'package:chat/features/auth/presentation/widgets/auth_textfield.dart';
+import 'package:chat/home_screen.dart';
 import 'package:chat/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,29 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
       await ref
           .read(authContollerProvider.notifier)
           .signInWithEmailAndPassword(email: email, password: password);
-
-      ref.listen(authContollerProvider, (previous, next) {
-        next.whenOrNull(
-          data: (user) {
-            user != null
-                ? Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
-                )
-                : null;
-            context.showSuccessSnackbar('Login successful');
-          },
-          error: (error, _) {
-            final message =
-                error is AppAuthException
-                    ? error.message
-                    : 'Failed to Login Please TryAgain later!';
-            if (context.mounted) {
-              context.showErrorSnackbar(message);
-            }
-          },
-        );
-      });
     }
   }
 
@@ -74,14 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Login",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 45,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
+                Text("Login", style: context.headlineMedium),
                 const SizedBox(height: 40),
                 AuthTextfield(
                   label: "Email",
@@ -99,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   hint: "Enter Your Password",
                   controller: passwordController,
                   type: TextInputType.text,
-                  action: TextInputAction.done,
+                  action: TextInputAction.go,
                   prefixIcon: Icons.lock_outline,
                   validator: (value) => validateNotEmpty(value),
                   isPassField: true,
@@ -115,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text(
                       "Forgot Password",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
@@ -125,6 +97,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 Consumer(
                   builder: (context, ref, _) {
                     final authState = ref.watch(authContollerProvider);
+                    ref.listen(authContollerProvider, (previous, next) {
+                      next.whenOrNull(
+                        data: (user) {
+                          user != null
+                              ? Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => HomeScreen()),
+                              )
+                              : null;
+                          context.showSuccessSnackbar('Login successful');
+                        },
+                        error: (error, _) {
+                          final message =
+                              error is AppAuthException
+                                  ? error.message
+                                  : 'Failed to Login Please TryAgain later!';
+                          if (context.mounted) {
+                            context.showErrorSnackbar(message);
+                          }
+                        },
+                      );
+                    });
 
                     return CustomButton(
                       title: "Login",
@@ -138,8 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Text(
                       "Don't have an account?",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
+                      style: context.bodyMedium.copyWith(
+                        color: context.onSurface,
                       ),
                     ),
                     TextButton(
@@ -152,7 +146,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         "Register",
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.primary,
+                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,
                         ),
                       ),

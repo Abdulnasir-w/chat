@@ -9,36 +9,37 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final supabaseUrl = "https://pbsvmluxomiwdolukbrb.supabase.co";
+  final supabaseUrl = "https://rekqmcppdyqsescyqekq.supabase.co";
   final supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBic3ZtbHV4b21pd2RvbHVrYnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIyNDA3NjAsImV4cCI6MjA1NzgxNjc2MH0.bZLBKNkayhHyX6TUhEVJvf7v09nuGbyQVhlkOYCjVUw";
-
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJla3FtY3BwZHlxc2VzY3lxZWtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MzI3MzYsImV4cCI6MjA1ODUwODczNn0.sq5pDoK20iPhtIsuOyxZMpp7zwdsCos_J6gGojXsxI8";
   try {
     await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   } catch (e) {
     throw Exception('Failed to initialize Supabase: $e');
   }
-
   runApp(const ProviderScope(child: ChatApp()));
 }
 
-class ChatApp extends ConsumerWidget {
+class ChatApp extends StatelessWidget {
   const ChatApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeProvider);
-    final scaffoldKey = ref.watch(scaffoldMessengerKeyProvider);
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) {
+        final themeMode = ref.watch(themeProvider);
+        final scaffoldKey = ref.watch(scaffoldMessengerKeyProvider);
+        return MaterialApp(
+          scaffoldMessengerKey: scaffoldKey,
 
-    return MaterialApp(
-      scaffoldMessengerKey: scaffoldKey,
-
-      title: 'Flutter Chat App',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
-      themeMode: themeMode,
-      home: LoginScreen(), // Add your initial screen
+          title: 'Flutter Chat App',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme(),
+          darkTheme: AppTheme.darkTheme(),
+          themeMode: themeMode,
+          home: LoginScreen(),
+        );
+      },
     );
   }
 }

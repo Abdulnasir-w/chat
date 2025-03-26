@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/core/utils/extensions/snakbar_extension.dart';
+import 'package:chat/core/utils/extensions/theme_extension.dart';
 import 'package:chat/core/utils/helpers/validator.dart';
+import 'package:chat/core/utils/widgets/avatar_picker.dart';
 import 'package:chat/core/utils/widgets/custom_button.dart';
 import 'package:chat/features/auth/presentation/screens/login_screen.dart';
 import 'package:chat/features/auth/presentation/widgets/auth_textfield.dart';
 import 'package:chat/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -21,55 +26,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  File? _selectAvatar;
 
-  @override
-  void dispose() {
-    userNameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    passwordController.dispose();
-    super.dispose();
+  Future<String?> _uploadAvatar() async {
+    if (_selectAvatar == null) {
+      return null;
+    }
+
+    try {
+      final extension = _selectAvatar!.path.split('.').last;
+      final fileName =
+          'avatar_${DateTime.now().millisecondsSinceEpoch}.$extension';
+      final storage = Supabase.instance.client.storage;
+
+      final uploadResponse = await storage
+          .from('avatars')
+          .upload(fileName, _selectAvatar!);
+
+      final publicUrl = storage.from('avatars').getPublicUrl(uploadResponse);
+
+      return publicUrl;
+    } catch (e) {
+      if (mounted) {
+        context.showErrorSnackbar('Avatar upload failed: ${e.toString()}');
+      }
+      rethrow;
+    }
   }
+  //   Future<void> deleteAvatar(String url) async {
+  //   try {
+  //     final path = url.split('avatars/').last;
+  //     await _supabase.storage
+  //       .from('avatars')
+  //       .remove([path]);
+  //   } on StorageException catch (e) {
+  //     throw AppException(message: 'Delete failed: ${e.message}');
+  //   }
+  // }
 
   Future<void> _register(WidgetRef ref) async {
-    final email = emailController.text.trim();
+    final email = emailController.text.trim().toLowerCase();
     final password = passwordController.text.trim();
     final userName = userNameController.text.trim();
     final phone = phoneController.text.trim();
 
     if (formKey.currentState!.validate()) {
-      await ref
-          .read(authContollerProvider.notifier)
-          .signUpWithEmailAndPassword(
-            email: email,
-            password: password,
-            userName: userName,
-            phone: phone,
-          );
+      try {
+        final avatarUrl = await _uploadAvatar();
+        print(avatarUrl);
 
-      ref.listen(authContollerProvider, (previous, next) {
-        next.whenOrNull(
-          data: (user) {
-            user != null
-                ? Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
-                )
-                : null;
-
-            context.showSuccessSnackbar('Account created successfully');
-          },
-          error: (error, _) {
-            final message =
-                error is AppAuthException
-                    ? error.message
-                    : 'Failed to create account Please TryAgain later!';
-            if (context.mounted) {
-              context.showErrorSnackbar(message);
-            }
-          },
-        );
-      });
+        await ref
+            .read(authContollerProvider.notifier)
+            .signUpWithEmailAndPassword(
+              email: email,
+              password: password,
+              userName: userName,
+              phone: phone,
+              avatar: avatarUrl.toString(),
+            );
+      } catch (e) {
+        print(e.toString());
+        if (mounted) {
+          context.showErrorSnackbar('Registration failed: ${e.toString()}');
+        }
+      }
     }
   }
 
@@ -93,22 +113,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      "Register",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 45,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
+                    Text("Register", style: context.headlineMedium),
                     const SizedBox(height: 30),
+                    AvatarPicker(
+                      image: _selectAvatar,
+                      onImageSelected: (file) {
+                        setState(() {
+                          _selectAvatar = file;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
 
                     AuthTextfield(
                       label: "Name",
                       hint: "Enter your Name",
                       controller: userNameController,
+                      capitalization: TextCapitalization.words,
                       type: TextInputType.name,
                       action: TextInputAction.next,
                       prefixIcon: Icons.person_outline,
@@ -120,7 +141,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       label: "Email",
                       hint: "Enter your Email",
                       controller: emailController,
-                      type: TextInputType.name,
+                      type: TextInputType.emailAddress,
                       action: TextInputAction.next,
                       prefixIcon: Icons.email_outlined,
                       validator: (value) => validateEmail(value),
@@ -143,7 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       hint: "Enter your Password",
                       controller: passwordController,
                       type: TextInputType.name,
-                      action: TextInputAction.next,
+                      action: TextInputAction.go,
                       prefixIcon: Icons.lock_outline,
                       isPassField: true,
                       validator: (value) => validateNotEmpty(value),
@@ -153,6 +174,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Consumer(
                       builder: (context, ref, _) {
                         final authState = ref.watch(authContollerProvider);
+                        ref.listen(authContollerProvider, (previous, next) {
+                          next.whenOrNull(
+                            data: (user) {
+                              user != null
+                                  ? Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => LoginScreen(),
+                                    ),
+                                  )
+                                  : null;
+
+                              context.showSuccessSnackbar(
+                                'Account created successfully',
+                              );
+                            },
+                            error: (error, _) {
+                              print(error.toString());
+                              final message =
+                                  error is AppAuthException
+                                      ? error.message
+                                      : 'Failed to create account Please TryAgain later!';
+                              if (context.mounted) {
+                                context.showErrorSnackbar(message);
+                              }
+                            },
+                          );
+                        });
                         return CustomButton(
                           title: "Register",
                           onPressed: () => _register(ref),
@@ -165,10 +214,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         Text(
                           "Alread have an account?",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                          style: context.bodyMedium.copyWith(
+                            color: context.onSurface,
                           ),
                         ),
                         TextButton(
@@ -181,7 +228,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: Text(
                             "Login",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.primary,
+                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -196,5 +244,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }

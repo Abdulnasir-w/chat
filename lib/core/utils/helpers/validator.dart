@@ -1,3 +1,4 @@
+// validator function
 String? validateEmail(String? value) {
   if (value == null || value.isEmpty) {
     return 'Please enter an email address';

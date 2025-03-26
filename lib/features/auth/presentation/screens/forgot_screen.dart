@@ -1,5 +1,6 @@
 import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/core/utils/extensions/snakbar_extension.dart';
+import 'package:chat/core/utils/extensions/theme_extension.dart';
 import 'package:chat/core/utils/helpers/validator.dart';
 import 'package:chat/core/utils/widgets/custom_button.dart';
 import 'package:chat/features/auth/presentation/screens/login_screen.dart';
@@ -8,15 +9,14 @@ import 'package:chat/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ForgotScreen extends ConsumerWidget {
+class ForgotScreen extends StatelessWidget {
   ForgotScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final formkey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authContollerProvider);
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -28,11 +28,7 @@ class ForgotScreen extends ConsumerWidget {
               children: [
                 Text(
                   "Forgot Password",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: context.headlineMedium.copyWith(fontSize: 30),
                 ),
                 const SizedBox(height: 250),
                 AuthTextfield(
@@ -55,44 +51,50 @@ class ForgotScreen extends ConsumerWidget {
                     },
                     child: Text(
                       "Back to Login",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
+                      style: context.bodyMedium.copyWith(
+                        color: context.onSurface,
                       ),
                     ),
                   ),
                 ),
-                CustomButton(
-                  title: "Send Reset Eamil",
-                  onPressed: () async {
-                    if (formkey.currentState!.validate()) {
-                      await ref
-                          .read(authContollerProvider.notifier)
-                          .resetPassword(email: emailController.text.trim());
-
-                      ref.listen(authContollerProvider, (prevous, next) {
-                        next.whenOrNull(
-                          data: (data) {
-                            if (data == null && context.mounted) {
-                              context.showSuccessSnackbar(
-                                'Password reset email sent successfully!',
+                Consumer(
+                  builder: (context, ref, _) {
+                    final authState = ref.watch(authContollerProvider);
+                    ref.listen(authContollerProvider, (prevous, next) {
+                      next.whenOrNull(
+                        data: (data) {
+                          if (data == null && context.mounted) {
+                            context.showSuccessSnackbar(
+                              'Password reset email send successfully!',
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                        error: (error, _) {
+                          final message =
+                              error is AppAuthException
+                                  ? error.message
+                                  : 'Failed to send reset email';
+                          if (context.mounted) {
+                            context.showErrorSnackbar(message);
+                          }
+                        },
+                      );
+                    });
+                    return CustomButton(
+                      title: "Send Reset Eamil",
+                      onPressed: () async {
+                        if (formkey.currentState!.validate()) {
+                          await ref
+                              .read(authContollerProvider.notifier)
+                              .resetPassword(
+                                email: emailController.text.trim(),
                               );
-                              Navigator.pop(context);
-                            }
-                          },
-                          error: (error, _) {
-                            final message =
-                                error is AppAuthException
-                                    ? error.message
-                                    : 'Failed to send reset email';
-                            if (context.mounted) {
-                              context.showErrorSnackbar(message);
-                            }
-                          },
-                        );
-                      });
-                    }
+                        }
+                      },
+                      state: authState,
+                    );
                   },
-                  state: authState,
                 ),
               ],
             ),

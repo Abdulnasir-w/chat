@@ -1,3 +1,4 @@
+import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/data/models/user_model.dart';
 import 'package:chat/data/repositories/auth_repositories.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,15 +35,24 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
     required String password,
     required String userName,
     required String phone,
+    required String avatar,
   }) async {
     state = AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      return await _authRepository.signUpWithEmailPassword(
+      final user = await _authRepository.signUpWithEmailPassword(
         email: email,
         password: password,
         userName: userName,
         phone: phone,
+        avatar: avatar,
       );
+
+      final currentUser = _authRepository.currentUser;
+      if (currentUser == null) {
+        throw AppAuthException(message: 'User creation failed unexpectedly');
+      }
+
+      return user;
     });
   }
 

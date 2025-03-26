@@ -9,11 +9,11 @@ class AuthRepository {
 
   AuthRepository(this._supabase);
 
-  UserModel _getUserFromAuthResponse(AuthResponse response) {
-    if (response.user == null) {
-      throw AppAuthException(message: 'Authentication failed');
-    }
-    return UserModel.fromAuthUser(response.user as User);
+  Future<UserModel> _completeUserProfile(User user) async {
+    final response =
+        await _supabase.from('users').select().eq('id', user.id).single();
+
+    return UserModel.fromJson(response);
   }
 
   // sign in
@@ -26,7 +26,9 @@ class AuthRepository {
         email: email,
         password: password,
       );
-      return _getUserFromAuthResponse(response.user as AuthResponse);
+      final user = response.user!;
+
+      return _completeUserProfile(user);
     } on AuthException catch (e) {
       throw AppAuthException(message: e.message);
     } catch (e) {
@@ -40,17 +42,48 @@ class AuthRepository {
     required String password,
     required String userName,
     required String phone,
+    required String avatar,
   }) async {
     try {
+      // Step 1: Auth signup only
       final response = await _supabase.auth.signUp(
         email: email,
         password: password,
-        data: {"name": userName, "phone": phone},
+        data: {
+          'user_name': userName,
+          'phone_number': phone,
+          'avatar_url': avatar,
+        },
       );
-      return _getUserFromAuthResponse(response as AuthResponse);
+      if (response.user == null) {
+        throw AppAuthException(message: 'User creation failed');
+      }
+
+      print("Auth signup successful: ${response.user!.id}");
+
+      // // Step 2: Manual insert
+      // await _supabase.from('users').insert({
+      //   'id': response.user!.id,
+      //   'email': email,
+      //   'user_name': userName,
+      //   'phone_number': phone,
+      //   'avatar_url': avatar,
+      //   'created_at': DateTime.now().toIso8601String(),
+      // });
+
+      print("Users table insert successful");
+
+      final user = response.user!;
+      return _completeUserProfile(user);
     } on AuthException catch (e) {
+      print('AuthException: ${e.code}, ${e.message}, ${e.statusCode}');
       throw AppAuthException(message: e.message);
-    } catch (e) {
+    } on PostgrestException catch (e) {
+      print('PostgrestException: ${e.message}, ${e.code}');
+      throw AppAuthException(message: e.message);
+    } catch (e, stackTrace) {
+      print('General Error: $e');
+      print('Stack Trace: $stackTrace');
       throw AppException(message: 'Failed to sign up: ${e.toString()}');
     }
   }
