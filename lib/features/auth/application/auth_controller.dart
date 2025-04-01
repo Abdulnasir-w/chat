@@ -1,6 +1,6 @@
 import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/data/models/user_model.dart';
-import 'package:chat/data/repositories/auth_repositories.dart';
+import 'package:chat/data/repositories/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends StateNotifier<AsyncValue<UserModel?>> {

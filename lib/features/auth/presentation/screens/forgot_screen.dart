@@ -91,6 +91,7 @@ class ForgotScreen extends StatelessWidget {
                                 email: emailController.text.trim(),
                               );
                         }
+                        if (context.mounted) {}
                       },
                       state: authState,
                     );

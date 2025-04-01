@@ -154,7 +154,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: phoneController,
                       type: TextInputType.phone,
                       action: TextInputAction.next,
-                      prefixIcon: Icons.lock_outline,
+                      prefixIcon: Icons.numbers_outlined,
                       validator: (value) => validateNotEmpty(value),
                     ),
                     const SizedBox(height: 20),
@@ -191,7 +191,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               );
                             },
                             error: (error, _) {
-                              print(error.toString());
                               final message =
                                   error is AppAuthException
                                       ? error.message

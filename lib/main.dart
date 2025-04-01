@@ -34,6 +34,7 @@ class ChatApp extends StatelessWidget {
 
           title: 'Flutter Chat App',
           debugShowCheckedModeBanner: false,
+
           theme: AppTheme.lightTheme(),
           darkTheme: AppTheme.darkTheme(),
           themeMode: themeMode,
