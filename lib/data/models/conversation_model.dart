@@ -1,7 +1,7 @@
 class ConversationModel {
   final String id;
   final DateTime createdAt;
-  final List<String> participantIds;
+  final List<String> participantIds; // These will be UUID strings
   final String? lastMessage;
 
   ConversationModel({
@@ -11,12 +11,24 @@ class ConversationModel {
     this.lastMessage,
   });
 
-  factory ConversationModel.fromJson(Map<String, dynamic> data) {
+  factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      id: data['id'] as String,
-      createdAt: DateTime.parse(data['created_at'] as String),
-      participantIds: List<String>.from(data['participant_ids']),
-      lastMessage: data['last_message'] as String?,
+      id: json['id'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      participantIds:
+          (json['participant_ids'] as List<dynamic>)
+              .map((id) => id as String)
+              .toList(),
+      lastMessage: json['last_message'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'created_at': createdAt.toIso8601String(),
+      'participant_ids': participantIds,
+      'last_message': lastMessage,
+    };
   }
 }

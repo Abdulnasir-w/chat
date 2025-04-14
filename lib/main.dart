@@ -17,7 +17,7 @@ void main() async {
   } catch (e) {
     throw Exception('Failed to initialize Supabase: $e');
   }
-  runApp(const ProviderScope(child: ChatApp()));
+  runApp(ProviderScope(child: ChatApp()));
 }
 
 class ChatApp extends StatelessWidget {

@@ -13,13 +13,23 @@ class MessageModel {
     required this.createdAt,
   });
 
-  factory MessageModel.fromJson(Map<String, dynamic> data) {
+  factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
-      id: data['id'] as String,
-      conversationId: data['conversation_id'] as String,
-      senderId: data['sender_id'] as String,
-      content: data['content'] as String,
-      createdAt: DateTime.parse(data['created_at'] as String),
+      id: json['id'] as String,
+      conversationId: json['conversation_id'] as String,
+      senderId: json['sender_id'] as String,
+      content: json['content'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'conversation_id': conversationId,
+      'sender_id': senderId,
+      'content': content,
+      'created_at': createdAt.toIso8601String(),
+    };
   }
 }

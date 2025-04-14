@@ -8,3 +8,7 @@ class AppException implements Exception {
 class AppAuthException extends AppException {
   AppAuthException({required super.message, super.stackTrace});
 }
+
+class AppDatabaseException extends AppException {
+  AppDatabaseException({required super.message});
+}

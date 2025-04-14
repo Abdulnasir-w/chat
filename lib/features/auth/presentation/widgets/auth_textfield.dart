@@ -68,7 +68,7 @@ class _AuthTextfieldState extends State<AuthTextfield> {
         _focusNode.unfocus();
       },
       onTap: () {
-        FocusScope.of(context).requestFocus(_focusNode);
+        _focusNode.requestFocus();
       },
       keyboardType: widget.type,
       textInputAction: widget.action,

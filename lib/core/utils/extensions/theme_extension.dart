@@ -15,7 +15,7 @@ extension ThemeExtension on BuildContext {
 
   TextStyle get timestampStyle => Theme.of(this).textTheme.bodyMedium!.copyWith(
     fontSize: 12,
-    color: Theme.of(this).colorScheme.onSurface.withOpacity(0.6),
+    color: Theme.of(this).colorScheme.onSurface.withValues(alpha: 0.9),
   );
 
   TextStyle get bodyMedium => Theme.of(this).textTheme.bodyMedium!;

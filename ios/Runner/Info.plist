@@ -21,6 +21,8 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
+    <key>NSContactsUsageDescription</key>
+    <string>We need access to find friends using this app</string>
 
     <key>NSCameraUsageDescription</key>
     <string>Need camera access to upload profile photos</string>
