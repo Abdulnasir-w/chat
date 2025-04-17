@@ -24,6 +24,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    _focusNode = FocusNode();
   }
 
   void _onSearchChanged() {

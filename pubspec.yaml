@@ -20,6 +20,7 @@ dependencies:
   gotrue: ^2.11.1
   fast_contacts: ^4.0.0
   flutter_isolate: ^2.1.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

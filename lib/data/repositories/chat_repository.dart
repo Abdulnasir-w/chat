@@ -1,3 +1,4 @@
+import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/data/models/conversation_model.dart';
 import 'package:chat/data/models/message_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,7 +14,7 @@ class ChatRepository {
         .from('messages')
         .stream(primaryKey: ['id'])
         .eq('conversation_id', conversationId)
-        .order('created_ag')
+        .order('created_at')
         .map((data) => data.map(MessageModel.fromJson).toList());
   }
 
@@ -30,30 +31,49 @@ class ChatRepository {
       'sender_id': userId,
       'content': content,
     });
+    await _supabase
+        .from('conversations')
+        .update({'last_message': content})
+        .eq('id', conversationId);
   }
 
   // Get or create conversation between two users
 
   Future<String> getOrCreateConversation(String otherUserId) async {
     final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) throw Exception('Not authenticated');
-    final response = await _supabase.rpc(
-      'get_conversation',
-      params: {'user_1': userId, 'user_2': otherUserId},
+    if (userId == null) throw AppException(message: 'Not authenticated');
+
+    // Validate UUID format
+    final uuidPattern = RegExp(
+      r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
     );
-
-    if (response == null) {
-      final conversation =
-          await _supabase.from('conversations').insert({}).select().single();
-
-      await _supabase.from('participants').insert({
-        {'user_id': userId, 'conversation_id': conversation['id']},
-        {'user_id': otherUserId, 'conversation_id': conversation['id']},
-      });
-
-      return conversation['id'] as String;
+    if (!uuidPattern.hasMatch(otherUserId)) {
+      throw Exception('Invalid user ID format: $otherUserId');
     }
-    return response['id'] as String;
+
+    try {
+      final response = await _supabase.rpc(
+        'get_or_create_conversation',
+        params: {'user1_id': userId, 'user2_id': otherUserId},
+      );
+      if (response == null) {
+        throw Exception('RPC returned null response');
+      }
+      if (response is! String) {
+        throw Exception('Unexpected response type: ${response.runtimeType}');
+      }
+      return response;
+    } catch (e) {
+      throw Exception('Failed to get or create conversation: $e');
+    }
+  }
+
+  Stream<ConversationModel> watchConversation(String conversationId) {
+    return _supabase
+        .from('conversations')
+        .stream(primaryKey: ['id'])
+        .eq('id', conversationId)
+        .map((data) => ConversationModel.fromJson(data.first));
   }
 
   // Get list of conversations for current user

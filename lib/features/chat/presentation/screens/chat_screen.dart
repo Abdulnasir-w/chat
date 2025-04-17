@@ -3,7 +3,8 @@ import 'package:chat/features/chat/presentation/widgets/pop_menu.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+  final String conversationId;
+  const ChatScreen({super.key, required this.conversationId});
 
   @override
   Widget build(BuildContext context) {

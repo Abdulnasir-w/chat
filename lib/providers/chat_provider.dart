@@ -9,6 +9,11 @@ final chatRepositoryProvider = Provider((ref) {
   return ChatRepository(supabase);
 });
 
+final chatControllerProvider =
+    StateNotifierProvider<ChatController, AsyncValue<void>>((ref) {
+      return ChatController(ref.watch(chatRepositoryProvider));
+    });
+
 final conversationProviders = StreamProvider((ref) {
   return ref.watch(chatRepositoryProvider).getConversations();
 });
@@ -18,8 +23,4 @@ final messageProvider = StreamProvider.family<List<MessageModel>, String>((
   conversationId,
 ) {
   return ref.watch(chatRepositoryProvider).getMessages(conversationId);
-});
-
-final chatControllerProvider = Provider((ref) {
-  return ChatController(ref.watch(chatRepositoryProvider));
 });

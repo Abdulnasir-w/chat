@@ -1,18 +1,53 @@
+import 'package:chat/core/exceptions/app_exceptions.dart';
+import 'package:chat/data/models/conversation_model.dart';
+import 'package:chat/data/models/message_model.dart';
 import 'package:chat/data/repositories/chat_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatController {
+class ChatController extends StateNotifier<AsyncValue<void>> {
   final ChatRepository _chatRepository;
 
-  ChatController(this._chatRepository);
+  ChatController(this._chatRepository) : super(const AsyncValue.data(null));
 
-  Future<void> sendMessages(String conversationId, String content) async {
-    await _chatRepository.sendMessage(
-      conversationId: conversationId,
-      content: content,
-    );
+  Future<void> sendMessages({
+    required String conversationId,
+    required String content,
+  }) async {
+    state = const AsyncValue.loading();
+
+    try {
+      await _chatRepository.sendMessage(
+        conversationId: conversationId,
+        content: content,
+      );
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      throw AppException(message: e.toString(), stackTrace: st);
+    }
   }
 
   Future<String> createConversation(String otherUserId) async {
-    return await _chatRepository.getOrCreateConversation(otherUserId);
+    try {
+      return await _chatRepository.getOrCreateConversation(otherUserId);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      throw AppException(
+        message: 'Failed to create conversation: $e',
+        stackTrace: st,
+      );
+    }
+  }
+
+  Stream<List<ConversationModel>> watchConversations() {
+    return _chatRepository.getConversations();
+  }
+
+  Stream<List<MessageModel>> watchMessages(String conversationId) {
+    return _chatRepository.getMessages(conversationId);
+  }
+
+  Stream<ConversationModel> watchSingleConversation(String conversationId) {
+    return _chatRepository.watchConversation(conversationId);
   }
 }

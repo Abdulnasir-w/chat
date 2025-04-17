@@ -1,5 +1,6 @@
 import 'package:chat/features/auth/presentation/screens/login_screen.dart';
 import 'package:chat/features/chat/presentation/screens/chat_screen.dart';
+import 'package:chat/features/chat/presentation/screens/conversations_screen.dart';
 import 'package:chat/features/contact/presentation/screens/contacts_screen.dart';
 import 'package:chat/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const ChatScreen()),
+                MaterialPageRoute(builder: (_) => const ConversationsScreen()),
               );
             },
             child: Text("Chat Screen"),
