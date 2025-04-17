@@ -1,4 +1,5 @@
 import 'package:chat/features/auth/presentation/screens/login_screen.dart';
+import 'package:chat/features/chat/presentation/screens/chat_screen.dart';
 import 'package:chat/features/contact/presentation/screens/contacts_screen.dart';
 import 'package:chat/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +12,19 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        spacing: 20,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Home Screen,"),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ChatScreen()),
+              );
+            },
+            child: Text("Chat Screen"),
+          ),
           Consumer(
             builder: (context, ref, _) {
               return ElevatedButton(
