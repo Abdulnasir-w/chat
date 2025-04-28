@@ -57,6 +57,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
   @override
   Widget build(BuildContext context) {
     final contactAsync = ref.watch(contactsControllerProvider);
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -64,10 +65,12 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
           'contacts',
           style: context.bodyLarge.copyWith(
             fontSize: 18,
-            color: context.onSurface,
+            color: isDarkMode ? context.onSurface : context.surface,
           ),
         ),
-        iconTheme: IconThemeData(color: context.onSurface),
+        iconTheme: IconThemeData(
+          color: isDarkMode ? context.onSurface : context.surface,
+        ),
         actions: [
           IconButton(
             onPressed:

@@ -1,6 +1,6 @@
 import 'package:chat/core/theme/theme.dart';
 import 'package:chat/core/utils/helpers/snakbar_helper.dart';
-import 'package:chat/features/auth/presentation/screens/login_screen.dart';
+import 'package:chat/home_screen.dart';
 import 'package:chat/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,7 +38,7 @@ class ChatApp extends StatelessWidget {
           theme: AppTheme.lightTheme(),
           darkTheme: AppTheme.darkTheme(),
           themeMode: themeMode,
-          home: LoginScreen(),
+          home: HomeScreen(),
         );
       },
     );
