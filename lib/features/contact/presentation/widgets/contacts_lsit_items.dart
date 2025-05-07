@@ -1,14 +1,16 @@
 import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/core/utils/extensions/snakbar_extension.dart';
 import 'package:chat/data/models/contact_model.dart';
+import 'package:chat/data/models/user_model.dart';
 import 'package:chat/features/chat/presentation/screens/chat_screen.dart';
 import 'package:chat/providers/chat_provider.dart';
+import 'package:chat/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ContactsLsitItems extends StatelessWidget {
+class ContactsListItems extends StatelessWidget {
   final ContactModel processedContact;
-  const ContactsLsitItems({super.key, required this.processedContact});
+  const ContactsListItems({super.key, required this.processedContact});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,16 @@ class ContactsLsitItems extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<UserModel?> _fetchUserInfo(WidgetRef ref, String userId) async {
+    if (userId.isEmpty) return null;
+    try {
+      return await ref.read(userProvider(userId).future);
+    } catch (e, st) {
+      debugPrint('Error fetching user info: $e');
+      throw AppException(message: e.toString(), stackTrace: st);
+    }
   }
 
   Widget _buildPhoneNumbers() {
@@ -61,29 +73,33 @@ class ContactsLsitItems extends StatelessWidget {
         context.showErrorSnackbar(
           'No registered user ID found for this contact',
         );
-        throw AppException(
-          message: 'No registered user ID found for this contact',
-        );
+        return;
       }
       final supabaseUserId = processedContact.userIds.first;
-      print('Starting chat with userId: $supabaseUserId'); // Debug print
+      print('Starting chat with userId: $supabaseUserId');
       final conversationId = await controller.createConversation(
         supabaseUserId,
       );
       if (context.mounted) {
+        final user = await _fetchUserInfo(ref, supabaseUserId);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ChatScreen(conversationId: conversationId),
+            builder:
+                (_) => ChatScreen(
+                  conversationId: conversationId,
+                  user: user, // Pass the fetched user (nullable)
+                ),
           ),
         );
       }
     } catch (e, st) {
+      final errorMessage =
+          e is AppException ? e.message : 'Unexpected error: $e';
       if (context.mounted) {
-        context.showErrorSnackbar('Failed to start chat: $e');
+        context.showErrorSnackbar('Failed to start chat: $errorMessage');
       }
-      debugPrint('Error starting chat: $e, stack: $st');
-      throw AppException(message: "Failed to start chat: $e", stackTrace: st);
+      print('Error starting chat: $errorMessage, stack: $st');
     }
   }
 
@@ -91,7 +107,7 @@ class ContactsLsitItems extends StatelessWidget {
     // TODO: Implement SMS invitation logic
     final phone = processedContact.contact.phones.firstOrNull?.number;
     if (phone != null) {
-      // Implement SMS invitation
+      // Implement SMS invitation (e.g., using url_launcher)
     }
   }
 }

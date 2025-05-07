@@ -3,6 +3,7 @@ class MessageModel {
   final String conversationId;
   final String senderId;
   final String content;
+  final DateTime? readAt;
   final DateTime createdAt;
 
   MessageModel({
@@ -10,6 +11,7 @@ class MessageModel {
     required this.conversationId,
     required this.senderId,
     required this.content,
+    this.readAt,
     required this.createdAt,
   });
 
@@ -19,6 +21,10 @@ class MessageModel {
       conversationId: json['conversation_id'] as String,
       senderId: json['sender_id'] as String,
       content: json['content'] as String,
+      readAt:
+          json['read_at'] != null
+              ? DateTime.parse(json['read_at'] as String)
+              : null,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }

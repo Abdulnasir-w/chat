@@ -14,7 +14,6 @@ class ChatController extends StateNotifier<AsyncValue<void>> {
     required String content,
   }) async {
     state = const AsyncValue.loading();
-
     try {
       await _chatRepository.sendMessage(
         conversationId: conversationId,
@@ -23,15 +22,21 @@ class ChatController extends StateNotifier<AsyncValue<void>> {
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
-      throw AppException(message: e.toString(), stackTrace: st);
+      throw AppException(message: 'Failed to send message: $e', stackTrace: st);
     }
   }
 
   Future<String> createConversation(String otherUserId) async {
     try {
-      return await _chatRepository.getOrCreateConversation(otherUserId);
+      print('Creating conversation with otherUserId: $otherUserId');
+      final conversationId = await _chatRepository.getOrCreateConversation(
+        otherUserId,
+      );
+      print('Conversation created with ID: $conversationId');
+      return conversationId;
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+      print('Error in createConversation: $e, stack: $st');
       throw AppException(
         message: 'Failed to create conversation: $e',
         stackTrace: st,

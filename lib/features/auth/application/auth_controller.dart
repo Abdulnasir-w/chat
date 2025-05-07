@@ -71,4 +71,6 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
       return null;
     });
   }
+
+  UserModel? get currentUser => _authRepository.currentUser;
 }

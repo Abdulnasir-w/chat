@@ -1,85 +1,179 @@
+import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/core/utils/extensions/theme_extension.dart';
+import 'package:chat/data/models/user_model.dart';
 import 'package:chat/features/chat/presentation/screens/chat_screen.dart';
+import 'package:chat/features/chat/presentation/widgets/conversation_tile.dart';
+import 'package:chat/providers/auth_provider.dart';
 import 'package:chat/providers/chat_provider.dart';
+import 'package:chat/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class ConversationsScreen extends ConsumerWidget {
   const ConversationsScreen({super.key});
 
-  PopupMenuItem menuItem({required String title, required dynamic value}) {
+  PopupMenuItem<String> menuItem({
+    required String title,
+    required String value,
+  }) {
     return PopupMenuItem(value: value, child: Text(title));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final conversationsAsync = ref.watch(conversationProviders);
-    const setting = 'settings';
-    const profile = 'profile';
-    const starred = 'starred';
-    const newGroup = 'newGroup';
+    final authState = ref.watch(authContollerProvider);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat", style: context.bodyLarge.copyWith(fontSize: 22)),
+        title: Text('Chat', style: context.bodyLarge.copyWith(fontSize: 22)),
         actions: [
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert),
-            position: PopupMenuPosition.under,
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            color: context.surface,
             onSelected: (value) {
-              if (value == setting) {
-                // Handle settings action
-              } else if (value == profile) {
-                // Handle profile action
-              } else if (value == starred) {
-                // Handle starred action
-              } else if (value == newGroup) {
-                // Handle new group action
-              }
+              /* handle menu */
             },
             itemBuilder:
-                (context) => [
-                  menuItem(title: "Settings", value: setting),
-                  menuItem(title: "Profile", value: profile),
-                  menuItem(title: "Starred", value: starred),
-                  menuItem(title: "New group", value: newGroup),
+                (_) => [
+                  menuItem(title: 'Settings', value: 'settings'),
+                  menuItem(title: 'Profile', value: 'profile'),
+                  menuItem(title: 'Starred', value: 'starred'),
+                  menuItem(title: 'New Group', value: 'newGroup'),
                 ],
           ),
         ],
-        actionsIconTheme: IconThemeData(color: context.onSurface),
-        iconTheme: IconThemeData(color: context.primary),
+        iconTheme: IconThemeData(
+          color: isDarkMode ? context.onSurface : context.surface,
+        ),
       ),
-      body: conversationsAsync.when(
-        error: (error, _) => Center(child: Text('Error: $error')),
-        loading: () => CircularProgressIndicator(),
-        data:
-            (conversations) => ListView.builder(
-              itemCount: conversations.length,
-              itemBuilder: (context, index) {
-                final conversation = conversations[index];
-
-                return ListTile(
-                  title: Text('Conversation ${index + 1}'),
-                  subtitle: Text(_formatDate(conversation.createdAt)),
-
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (_) =>
-                                  ChatScreen(conversationId: conversation.id),
-                        ),
+      body: authState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, _) => Center(child: Text('Auth Error: $err')),
+        data: (currentUser) {
+          if (currentUser == null) {
+            return const Center(child: Text('Please log in'));
+          }
+          return conversationsAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error:
+                (err, _) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Conversation Error: $err'),
+                      ElevatedButton(
+                        onPressed: () => ref.refresh(conversationProviders),
+                        child: const Text('Retry'),
                       ),
-                );
-              },
-            ),
+                    ],
+                  ),
+                ),
+            data: (conversations) {
+              if (conversations.isEmpty) {
+                return const Center(child: Text('No conversations yet'));
+              }
+              return RefreshIndicator(
+                onRefresh: () => ref.refresh(conversationProviders.future),
+                child: ListView.builder(
+                  cacheExtent: 1000,
+                  itemCount: conversations.length,
+                  itemBuilder: (context, index) {
+                    final convo = conversations[index];
+                    // Determine the other participant
+                    final otherId = convo.participantIds.firstWhere(
+                      (id) => id != currentUser.id,
+                      orElse: () => '',
+                    );
+                    if (otherId.isEmpty) {
+                      // Skip self-chat entries
+                      return const SizedBox.shrink();
+                    }
+                    return FutureBuilder<UserModel?>(
+                      future: _fetchUserInfo(ref, otherId),
+                      builder: (context, snap) {
+                        if (snap.connectionState == ConnectionState.waiting) {
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: context.onSurface,
+                            ),
+                            title: const Text('Loading...'),
+                          );
+                        }
+                        if (snap.hasError) {
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: context.onSurface,
+                              child: const Icon(Icons.error),
+                            ),
+                            title: const Text('Error loading user'),
+                            subtitle: const Text('Tap to retry'),
+                            onTap: () => ref.refresh(userProvider(otherId)),
+                          );
+                        }
+                        final user = snap.data;
+                        if (user == null) {
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: context.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: context.onSurface
+                                      .withOpacity(0.1),
+                                  child: const Icon(
+                                    Icons.person_off,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Text('Unknown user', style: context.bodyLarge),
+                              ],
+                            ),
+                          );
+                        }
+                        // Display conversation tile
+                        return ConversationTile(
+                          convo: convo,
+                          user: user,
+                          isDarkMode: isDarkMode,
+                          onTap:
+                              () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => ChatScreen(
+                                        conversationId: convo.id,
+                                        user: user,
+                                      ),
+                                ),
+                              ),
+                          index: index,
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
 
-  String _formatDate(DateTime date) {
-    return DateFormat('MMM dd, HH:mm').format(date);
+  Future<UserModel?> _fetchUserInfo(WidgetRef ref, String userId) async {
+    try {
+      return await ref.read(userProvider(userId).future);
+    } catch (e, st) {
+      debugPrint('Error fetching user info: $e');
+      throw AppException(message: e.toString(), stackTrace: st);
+    }
   }
 }

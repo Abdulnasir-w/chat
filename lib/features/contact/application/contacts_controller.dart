@@ -11,67 +11,89 @@ final contactsControllerProvider =
 class ContactsController extends StateNotifier<AsyncValue<List<ContactModel>>> {
   final Ref ref;
 
-  ContactsController({required this.ref}) : super(const AsyncValue.loading()) {
-    loadContacts();
-  }
+  ContactsController({required this.ref}) : super(const AsyncValue.data([]));
+  // Initialize with an empty list instead of loading immediately
 
   Future<void> loadContacts() async {
     state = const AsyncValue.loading();
     try {
       final contacts = await _fetchAndProcessContacts();
       state = AsyncValue.data(contacts);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+    } catch (e, st) {
+      print('Error in loadContacts: $e\n$st');
+      state = AsyncValue.error(e, st);
     }
   }
 
   Future<List<ContactModel>> _fetchAndProcessContacts() async {
-    final contacts = await FastContacts.getAllContacts();
-    final filteredContacts =
-        contacts.where((c) => c.phones.isNotEmpty).toList();
+    try {
+      final contacts = await FastContacts.getAllContacts(
+        fields: [
+          ContactField.phoneNumbers,
+          ContactField.displayName,
+        ], // Limit fields
+      );
+      print('Fetched ${contacts.length} contacts.');
 
-    final phoneNumbers = _extractPhoneNumbers(filteredContacts);
-    final supabase = Supabase.instance.client;
+      final filteredContacts =
+          contacts.where((c) => c.phones.isNotEmpty).toList();
+      print('Filtered to ${filteredContacts.length} contacts with phones.');
 
-    final existingUsers = await supabase
-        .from('users')
-        .select('id, phone_number')
-        .inFilter('phone_number', phoneNumbers);
+      final phoneNumbers = _extractPhoneNumbers(filteredContacts);
+      print('Extracted ${phoneNumbers.length} phone numbers.');
 
-    final phoneToUserId = {
-      for (var user in existingUsers)
-        _normalizePhone(user['phone_number']): user['id'] as String,
-    };
+      final supabase = Supabase.instance.client;
 
-    // Create list and sort registered contacts first
-    final contactList =
-        filteredContacts.map((contact) {
-          final registeredNumbers =
-              contact.phones.where((phone) {
-                final normalized = _normalizePhone(phone.number);
-                return phoneToUserId.containsKey(normalized);
-              }).toList();
+      if (phoneNumbers.isEmpty) {
+        print('No phone numbers to query.');
+        return [];
+      }
 
-          return ContactModel(
-            contact: contact,
-            isRegistered: registeredNumbers.isNotEmpty,
-            userIds:
-                registeredNumbers
-                    .map(
-                      (phone) => phoneToUserId[_normalizePhone(phone.number)],
-                    )
-                    .whereType<String>()
-                    .toList(),
-          );
-        }).toList();
+      final existingUsers = await supabase
+          .from('users')
+          .select('id, phone_number')
+          .inFilter('phone_number', phoneNumbers);
 
-    // Sort contacts with registered users first
-    contactList.sort((a, b) {
-      if (a.isRegistered && !b.isRegistered) return -1;
-      if (!a.isRegistered && b.isRegistered) return 1;
-      return 0;
-    });
-    return contactList;
+      print('Fetched ${existingUsers.length} users from Supabase.');
+
+      final phoneToUserId = {
+        for (var user in existingUsers)
+          _normalizePhone(user['phone_number'] ?? ''): user['id'] as String,
+      };
+
+      final contactList =
+          filteredContacts.map((contact) {
+            final registeredNumbers =
+                contact.phones.where((phone) {
+                  final normalized = _normalizePhone(phone.number);
+                  return phoneToUserId.containsKey(normalized);
+                }).toList();
+
+            return ContactModel(
+              contact: contact,
+              isRegistered: registeredNumbers.isNotEmpty,
+              userIds:
+                  registeredNumbers
+                      .map(
+                        (phone) => phoneToUserId[_normalizePhone(phone.number)],
+                      )
+                      .whereType<String>()
+                      .toList(),
+            );
+          }).toList();
+
+      contactList.sort((a, b) {
+        if (a.isRegistered && !b.isRegistered) return -1;
+        if (!a.isRegistered && b.isRegistered) return 1;
+        return 0;
+      });
+
+      print('Final contact list size: ${contactList.length}');
+      return contactList;
+    } catch (e, st) {
+      print('Error in _fetchAndProcessContacts: $e\n$st');
+      rethrow;
+    }
   }
 
   List<String> _extractPhoneNumbers(List<Contact> contacts) {

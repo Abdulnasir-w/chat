@@ -50,7 +50,7 @@ class AppTheme {
       ),
       cardTheme: CardTheme(
         color: colorScheme.surfaceContainer, // Slightly elevated surface
-        elevation: 1, // M3 uses subtle elevation
+        elevation: 1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );

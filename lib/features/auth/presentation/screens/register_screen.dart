@@ -82,7 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               password: password,
               userName: userName,
               phone: phone,
-              avatar: avatarUrl.toString(),
+              avatar: avatarUrl!,
             );
       } catch (e) {
         print(e.toString());

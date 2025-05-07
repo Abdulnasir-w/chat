@@ -6,6 +6,7 @@ import 'package:chat/features/contact/application/contacts_controller.dart';
 import 'package:chat/features/contact/presentation/widgets/contacts_lsit_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ContactsScreen extends ConsumerStatefulWidget {
   const ContactsScreen({super.key});
@@ -25,6 +26,42 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
     super.initState();
     _searchController.addListener(_onSearchChanged);
     _focusNode = FocusNode();
+    _requestContactsPermission();
+  }
+
+  Future<void> _requestContactsPermission() async {
+    final status = await Permission.contacts.request();
+    if (status.isGranted) {
+      print("Contacts permission granted");
+      // Load contacts after permission is granted
+      ref.read(contactsControllerProvider.notifier).loadContacts();
+    } else if (status.isDenied) {
+      print("Contacts permission denied");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            "Please grant contacts permission to view contacts",
+          ),
+          action: SnackBarAction(
+            label: "Retry",
+            onPressed: _requestContactsPermission,
+          ),
+        ),
+      );
+    } else if (status.isPermanentlyDenied) {
+      print("Contacts permission permanently denied");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            "Contacts permission is required. Please enable it in settings.",
+          ),
+          action: SnackBarAction(
+            label: "Settings",
+            onPressed: () => openAppSettings(),
+          ),
+        ),
+      );
+    }
   }
 
   void _onSearchChanged() {
@@ -62,7 +99,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'contacts',
+          'Contacts',
           style: context.bodyLarge.copyWith(
             fontSize: 18,
             color: isDarkMode ? context.onSurface : context.surface,
@@ -93,7 +130,6 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
                   final filtered = _filteredContacts(contacts);
                   return ContactList(contacts: filtered);
                 },
-
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) {
                   debugPrint('Error: ${error.toString()}');
@@ -102,7 +138,6 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('Error: ${error.toString()}'),
-
                         ElevatedButton(
                           onPressed:
                               () => ref.invalidate(contactsControllerProvider),
@@ -188,7 +223,7 @@ class ContactList extends StatelessWidget {
       itemCount: contacts.length,
       itemBuilder: (context, index) {
         final contact = contacts[index];
-        return ContactsLsitItems(processedContact: contact);
+        return ContactsListItems(processedContact: contact);
       },
     );
   }

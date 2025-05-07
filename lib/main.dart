@@ -1,5 +1,6 @@
 import 'package:chat/core/theme/theme.dart';
 import 'package:chat/core/utils/helpers/snakbar_helper.dart';
+import 'package:chat/features/auth/presentation/screens/login_screen.dart';
 import 'package:chat/home_screen.dart';
 import 'package:chat/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +39,24 @@ class ChatApp extends StatelessWidget {
           theme: AppTheme.lightTheme(),
           darkTheme: AppTheme.darkTheme(),
           themeMode: themeMode,
-          home: HomeScreen(),
+          home: AuthWrapper(),
         );
       },
     );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final supabase = Supabase.instance.client;
+    final user = supabase.auth.currentUser;
+
+    if (user == null) {
+      return const LoginScreen(); // Redirect to login if not authenticated
+    }
+    return const HomeScreen(); // Proceed to home if authenticated
   }
 }
