@@ -13,8 +13,13 @@ void main() async {
   final supabaseUrl = "https://rekqmcppdyqsescyqekq.supabase.co";
   final supabaseKey =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJla3FtY3BwZHlxc2VzY3lxZWtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MzI3MzYsImV4cCI6MjA1ODUwODczNn0.sq5pDoK20iPhtIsuOyxZMpp7zwdsCos_J6gGojXsxI8";
+
   try {
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+    await Supabase.initialize(
+      url: supabaseUrl,
+      anonKey: supabaseKey,
+      realtimeClientOptions: RealtimeClientOptions(eventsPerSecond: 40),
+    );
   } catch (e) {
     throw Exception('Failed to initialize Supabase: $e');
   }

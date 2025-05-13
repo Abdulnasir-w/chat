@@ -125,8 +125,9 @@ class ConversationsScreen extends ConsumerWidget {
                               children: [
                                 CircleAvatar(
                                   radius: 25,
-                                  backgroundColor: context.onSurface
-                                      .withOpacity(0.1),
+                                  backgroundColor: context.onSurface.withAlpha(
+                                    26,
+                                  ),
                                   child: const Icon(
                                     Icons.person_off,
                                     color: Colors.grey,

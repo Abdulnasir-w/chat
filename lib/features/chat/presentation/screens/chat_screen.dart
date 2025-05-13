@@ -5,6 +5,7 @@ import 'package:chat/features/chat/presentation/widgets/message_inputfield.dart'
 import 'package:chat/features/chat/presentation/widgets/pop_menu.dart';
 import 'package:chat/providers/auth_provider.dart';
 import 'package:chat/providers/chat_provider.dart';
+import 'package:chat/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +19,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-
+  final FocusNode _focusNode = FocusNode(); // Create FocusNode
   void _handleMenuSelection(MenuAction action, BuildContext context) {
     switch (action) {
       case MenuAction.viewContact:
@@ -55,6 +56,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _focusNode.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final messageAsync = ref.watch(messageProvider(widget.conversationId));
     final authState = ref.watch(authContollerProvider);
@@ -65,7 +72,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: [
             CircleAvatar(
               radius: 18,
-              backgroundColor: context.onSurface.withOpacity(0.1),
+              backgroundColor: context.onSurface.withAlpha(26),
               child:
                   widget.user?.avatarUrl?.isNotEmpty == true
                       ? ClipOval(
@@ -81,7 +88,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       )
                       : const Icon(Icons.person),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 15),
             Text(widget.user!.userName, style: context.bodyLarge),
           ],
         ),
@@ -109,6 +116,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     if (currentUser == null) {
                       return const Center(child: Text('Please log in'));
                     }
+
                     return messageAsync.when(
                       data: (messages) {
                         if (messages.isEmpty) {
@@ -152,6 +160,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: MessageInputfield(
                   controller: _messageController,
+                  focusNode: _focusNode,
                   onSendMessage: () {
                     if (_messageController.text.trim().isNotEmpty) {
                       ref
@@ -161,6 +170,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             content: _messageController.text.trim(),
                           );
                       _messageController.clear();
+                      FocusScope.of(context).requestFocus(_focusNode);
                     }
                   },
                 ),

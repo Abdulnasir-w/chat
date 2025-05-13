@@ -1,4 +1,3 @@
-import 'package:chat/data/models/message_model.dart';
 import 'package:chat/data/repositories/chat_repository.dart';
 import 'package:chat/features/chat/application/chat_controller.dart';
 import 'package:chat/providers/supabase_provider.dart';
@@ -11,16 +10,9 @@ final chatRepositoryProvider = Provider((ref) {
 
 final chatControllerProvider =
     StateNotifierProvider<ChatController, AsyncValue<void>>((ref) {
-      return ChatController(ref.watch(chatRepositoryProvider));
+      return ChatController(ref.watch(chatRepositoryProvider), ref);
     });
 
 final conversationProviders = StreamProvider((ref) {
   return ref.watch(chatRepositoryProvider).getConversations();
-});
-
-final messageProvider = StreamProvider.family<List<MessageModel>, String>((
-  ref,
-  conversationId,
-) {
-  return ref.watch(chatRepositoryProvider).getMessages(conversationId);
 });

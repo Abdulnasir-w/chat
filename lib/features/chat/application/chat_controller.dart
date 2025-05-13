@@ -2,12 +2,15 @@ import 'package:chat/core/exceptions/app_exceptions.dart';
 import 'package:chat/data/models/conversation_model.dart';
 import 'package:chat/data/models/message_model.dart';
 import 'package:chat/data/repositories/chat_repository.dart';
+import 'package:chat/providers/message_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatController extends StateNotifier<AsyncValue<void>> {
   final ChatRepository _chatRepository;
+  final Ref _ref;
 
-  ChatController(this._chatRepository) : super(const AsyncValue.data(null));
+  ChatController(this._chatRepository, this._ref)
+    : super(const AsyncValue.data(null));
 
   Future<void> sendMessages({
     required String conversationId,
@@ -19,6 +22,7 @@ class ChatController extends StateNotifier<AsyncValue<void>> {
         conversationId: conversationId,
         content: content,
       );
+      _ref.invalidate(messageProvider(conversationId));
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

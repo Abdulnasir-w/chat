@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class MessageInputfield extends ConsumerStatefulWidget {
   final TextEditingController controller;
   final VoidCallback onSendMessage;
+  final FocusNode focusNode;
   const MessageInputfield({
     super.key,
     required this.controller,
     required this.onSendMessage,
+    required this.focusNode,
   });
 
   @override
@@ -78,10 +80,17 @@ class _MessageInputfieldState extends ConsumerState<MessageInputfield> {
                         controller: widget.controller,
                         scrollController: _scrollController,
                         keyboardType: TextInputType.multiline,
+                        focusNode: widget.focusNode,
                         minLines: 1,
                         maxLines: null,
                         textAlignVertical: TextAlignVertical.top,
-                        onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                        textInputAction: TextInputAction.send,
+                        onTapUpOutside: (_) => FocusScope.of(context).unfocus(),
+                        onSubmitted: (value) {
+                          if (value.trim().isNotEmpty) {
+                            widget.onSendMessage();
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Message',
                           border: InputBorder.none,
@@ -110,7 +119,9 @@ class _MessageInputfieldState extends ConsumerState<MessageInputfield> {
           ),
         ),
         IconButton(
-          onPressed: widget.onSendMessage,
+          onPressed: () {
+            widget.onSendMessage();
+          },
           icon: CircleAvatar(
             backgroundColor: context.primary,
             radius: 20,

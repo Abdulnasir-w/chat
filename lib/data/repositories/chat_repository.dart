@@ -144,28 +144,56 @@ class ChatRepository {
     }
   }
 
-  // Stream<List<ConversationModel>> getConversations() {
-  //   final userId = _supabase.auth.currentUser?.id;
-  //   if (userId == null) throw AppException(message: 'Not authenticated');
-  //   print('Fetching conversations for user ID: $userId');
-  //   print('onTrap    ');
-  //   try {
+  Future<void> sendReaction({
+    required String messageId,
+    required String emoji,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw AppException(message: 'User not authenticated');
 
-  //     return _supabase
-  //         .from('conversations')
-  //         .stream(primaryKey: ['id'])
-  //         .inFilter('participant_ids', [userId]) // Use 'cs' for contains
-  //         .order('updated_at', ascending: false)
-  //         .map((data) {
-  //           print('Received conversation data: $data'); // Debug log
-  //           return data.map(ConversationModel.fromJson).toList();
-  //         });
-  //   } catch (e, st) {
-  //     print(e);
-  //     throw AppException(
-  //       message: 'Failed to fetch conversations: $e ',
-  //       stackTrace: st,
-  //     );
-  //   }
-  // }
+    try {
+      // Check if the message exists
+      final messageExists = await _supabase
+          .from('messages')
+          .select('id, reactions')
+          .eq('id', messageId)
+          .maybeSingle();
+      if (messageExists == null) {
+        throw AppException(message: 'Message with ID $messageId does not exist');
+      }
+
+      // Check for existing reaction to prevent duplicates
+      final existingReactions = messageExists['reactions'] != null
+          ? (messageExists['reactions'] as List<dynamic>).cast<Map<String, dynamic>>()
+          : <Map<String, dynamic>>[];
+      final hasReaction = existingReactions.any(
+        (r) => r['user_id'] == userId && r['emoji'] == emoji,
+      );
+      if (hasReaction) {
+        throw AppException(message: 'User already reacted with $emoji');
+      }
+
+      // Append new reaction
+      final newReaction = {
+        'user_id': userId,
+        'emoji': emoji,
+        'created_at': DateTime.now().toIso8601String(),
+      };
+      await _supabase
+          .from('messages')
+          .update({
+            'reactions': [...existingReactions, newReaction],
+          })
+          .eq('id', messageId);
+    } on PostgrestException catch (e, st) {
+      final errorMsg =
+          'PostgrestException: ${e.message}, code: ${e.code}, details: ${e.details}';
+      print('$errorMsg, stack: $st');
+      throw AppException(message: errorMsg, stackTrace: st);
+    } catch (e, st) {
+      final errorMsg = 'Unexpected error: $e';
+      print('$errorMsg, stack: $st');
+      throw AppException(message: errorMsg, stackTrace: st);
+    }
+  }
 }
