@@ -44,6 +44,11 @@ class ChatApp extends StatelessWidget {
           theme: AppTheme.lightTheme(),
           darkTheme: AppTheme.darkTheme(),
           themeMode: themeMode,
+          themeAnimationStyle: AnimationStyle(
+            curve: Curves.bounceIn,
+            duration: Duration(seconds: 3),
+          ),
+
           home: AuthWrapper(),
         );
       },

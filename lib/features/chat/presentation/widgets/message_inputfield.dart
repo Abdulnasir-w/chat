@@ -41,6 +41,7 @@ class _MessageInputfieldState extends ConsumerState<MessageInputfield> {
   @override
   void dispose() {
     widget.controller.removeListener(_onTextChange);
+
     _scrollController.dispose();
     super.dispose();
   }
@@ -118,16 +119,30 @@ class _MessageInputfieldState extends ConsumerState<MessageInputfield> {
             ),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            widget.onSendMessage();
-          },
-          icon: CircleAvatar(
-            backgroundColor: context.primary,
-            radius: 20,
-            child: Center(child: Icon(Icons.send, color: Colors.white)),
-          ),
-        ),
+
+        hasText
+            ? IconButton(
+              onPressed: () {
+                widget.onSendMessage();
+              },
+              icon: CircleAvatar(
+                backgroundColor: context.primary,
+                radius: 20,
+                child: Center(child: Icon(Icons.send, color: Colors.white)),
+              ),
+            )
+            : IconButton(
+              //  TODO::// Voice Message implemantation is not completed
+              onLongPress: () {},
+              onPressed: () {
+                widget.onSendMessage();
+              },
+              icon: CircleAvatar(
+                backgroundColor: context.primary,
+                radius: 20,
+                child: Center(child: Icon(Icons.mic, color: Colors.white)),
+              ),
+            ),
       ],
     );
   }
